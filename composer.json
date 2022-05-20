@@ -1,6 +1,6 @@
 {
   "name": "bbn/appui-bookmark",
-  "description": "Bookmark management andf UI for appui",
+  "description": "Bookmark management and UI for appui",
   "keywords": ["bookmarks","favorite","pinterest","digg","netscape","php","appui"],
   "homepage": "https://github.com/nabab/appui-bookmark",
   "license": "MIT",
