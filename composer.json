@@ -1,8 +1,8 @@
 {
-  "name": "bbn/appui-note",
-  "description": "Notes system for appui",
-  "keywords": ["notes","php","appui"],
-  "homepage": "https://github.com/nabab/appui-note",
+  "name": "bbn/appui-bookmark",
+  "description": "Bookmark management andf UI for appui",
+  "keywords": ["bookmarks","favorite","pinterest","netscape","php","appui"],
+  "homepage": "https://github.com/nabab/appui-bookmark",
   "license": "MIT",
   "authors": [
     {
@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0",
+    "php": ">=8.0",
     "bbn/bbn": "dev-master",
     "nesk/puphpeteer": "dev-dev"
   }
