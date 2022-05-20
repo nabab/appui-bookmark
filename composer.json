@@ -1,7 +1,7 @@
 {
   "name": "bbn/appui-bookmark",
   "description": "Bookmark management andf UI for appui",
-  "keywords": ["bookmarks","favorite","pinterest","netscape","php","appui"],
+  "keywords": ["bookmarks","favorite","pinterest","digg","netscape","php","appui"],
   "homepage": "https://github.com/nabab/appui-bookmark",
   "license": "MIT",
   "authors": [
