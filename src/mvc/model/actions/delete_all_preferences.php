@@ -8,7 +8,7 @@
 
 use bbn\X;
 
-$id_list = $model->inc->options->fromCode("list", "bookmarks", "note", "appui");
+$id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
 $my_list = $model->inc->pref->getByOption($id_list);
 $res['success'] = $model->inc->pref->deleteBits($my_list['id']);
 

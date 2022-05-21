@@ -6,7 +6,7 @@
         text: '',
         description: '',
         link: false,
-        linkPreview: appui.plugins['appui-note'] + '/actions/bookmarks/link_preview',
+        linkPreview: appui.plugins['appui-bookmark'] + '/actions/link_preview',
         imageDom: bookmarks.imageDom,
       }
     },
@@ -56,7 +56,7 @@
       },
       editLink(){
         this.confirm(bbn._('Are you sure you want to save changes?'),() => {
-          this.post(appui.plugins['appui-note'] + '/bookmarks/actions/edit', this.source, (d) => {
+          this.post(appui.plugins['appui-bookmark'] + '/actions/edit', this.source, (d) => {
             if ( d.success && d.bookmarks){
               bookmarks.source.bookmarks = d.bookmarks;  
             }
@@ -85,7 +85,7 @@
               description: this.source.description,
               image: this.source.image ? this.source.image : false
             }
-          this.post(appui.plugins['appui-note'] + '/actions/bookmarks/insert', object, (d) => {
+          this.post(appui.plugins['appui-bookmark'] + '/actions/insert', object, (d) => {
             if (d.success > 0) {
               //bookmarks.source.bookmarks = d.bookmarks;
               //this.description = '';

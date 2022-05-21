@@ -83,7 +83,7 @@
       },
       openEditor(bookmark) {
         this.getPopup({
-          component: "appui-note-bookmarks-form",
+          component: "appui-bookmark-form",
           componentOptions: {
             source: bookmark
           },
@@ -94,7 +94,7 @@
         if (source.url) {
           window.open(source.url, source.text);
           bbn.fn.post(
-            this.root + "actions/bookmarks/count",
+            this.root + "actions/count",
             {
               id: source.id,
               searchCover: !source.cover
@@ -110,7 +110,7 @@
                     this.source.cover = d.data.path;
                   }
                 }
-                this.closest('appui-note-bookmarks-block').updateData();
+                this.closest('appui-bookmark-block').updateData();
               }
             }
           );
@@ -118,7 +118,7 @@
       },
       deletePreference(bookmark) {
         bbn.fn.post(
-          this.root + "actions/bookmarks/delete",
+          this.root + "actions/delete",
           {
             id: bookmark.id
           },  d => {

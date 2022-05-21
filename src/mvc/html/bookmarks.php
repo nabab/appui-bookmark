@@ -1,1 +1,1 @@
-<appui-note-bookmarks-list :source="source"></appui-note-bookmarks-list>
+<appui-bookmark-list :source="source"></appui-bookmark-list>

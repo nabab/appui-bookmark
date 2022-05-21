@@ -93,7 +93,7 @@
       },
       openEditor(bookmark) {
         this.getPopup({
-          component: "appui-note-bookmarks-form",
+          component: "appui-bookmark-form",
           componentOptions: {
             source: bookmark
           },
@@ -123,7 +123,7 @@
       },
       deletePreference(bookmark) {
         bbn.fn.post(
-          this.root + "actions/bookmarks/delete",
+          this.root + "actions/delete",
           {
             id: bookmark.id
           },  d => {
@@ -137,7 +137,7 @@
         if (source.url) {
           window.open(source.url, source.text);
           bbn.fn.post(
-            this.root + "actions/bookmarks/count",
+            this.root + "actions/count",
             {
               id: source.id,
             },

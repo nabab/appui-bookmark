@@ -1,6 +1,6 @@
 <!-- HTML Document -->
 
-<section class="appui-note-bookmarks-item">
+<section class="appui-bookmark-item">
   <bbn-context v-if="isVisible"
                :context="true"
                :source="contextMenu(source)"

@@ -1,6 +1,6 @@
 <!-- HTML Document -->
 
-<div class="bbn-overlay appui-note-bookmarks-list">
+<div class="bbn-overlay appui-bookmark-list">
   <bbn-splitter orientation="horizontal"
                 :resizable="true">
 
@@ -15,8 +15,7 @@
                       @select="selectTree"
                       v-if="source.data.length"
                       :draggable="true"
-                      @dragEnd="isDragEnd"
-                      ></bbn-tree>
+                      @dragEnd="isDragEnd"/>
             <label class="bbn-w-100" v-else><?=_("No Bookmarks yet")?></label>
           </div>
         </div>
@@ -25,7 +24,7 @@
 
     <bbn-pane>
 
-      <appui-note-bookmarks-block :source="blockSource" ></appui-note-bookmarks-block>
+      <appui-bookmark-block :source="blockSource"/>
     </bbn-pane>
   </bbn-splitter>
 </div>

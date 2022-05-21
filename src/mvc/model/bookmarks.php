@@ -7,7 +7,7 @@
 /** @var $model \bbn\Mvc\Model*/
 use bbn\X;
 
-$id_list = $model->inc->options->fromCode("list", "bookmarks", "note", "appui");
+$id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
 //$id_cat = $model->inc->options->fromCode("cat", "bookmarks", "note", "appui");
 $tree = $model->getCachedModel($model->pluginUrl("appui-note")."/data/bookmarks", [], 3600);
 $parents[] = [

@@ -7,7 +7,7 @@
 /** @var $model \bbn\Mvc\Model*/
 use bbn\X;
 
-$id_list = $model->inc->options->fromCode("list", "bookmarks", "note", "appui");
+$id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
 $res = ["success" => false];
 $parent = false;
 

@@ -50,19 +50,25 @@
         toolbarSource: [
           {
             icon: "nf nf-fa-plus",
-            text: "Create a new link",
+            text: bbn._("Create a new link"),
             notext: true,
             action: this.newform,
           },
           {
-            icon: "nf nf-mdi-clipboard_plus",
-            text: "Import bookmarks",
+            icon: "nf nf-mdi-folder_plus",
+            text: bbn._("Add folder"),
+            notext: true,
+            action: this.addFolder,
+          },
+          {
+            icon: "nf nf-mdi-folder_upload",
+            text: bbn._("Import bookmarks"),
             notext: true,
             action: this.importing,
           },
           {
             icon: "nf nf-fa-trash",
-            text: "Delete all bookmarks",
+            text: bbn._("Delete all bookmarks"),
             notext: true,
             action: this.deleteAllBookmarks,
           }
@@ -81,7 +87,7 @@
     methods: {
       importing() {
         this.getPopup({
-          component: "appui-note-bookmarks-uploader",
+          component: "appui-bookmark-uploader",
           componentOptions: null,
           title: false,
         });
@@ -89,7 +95,7 @@
       deleteAllBookmarks() {
         this.confirm(bbn._("Are you sure you want to delete all your bookmarks ?"), () => {
           bbn.fn.post(
-          this.root + "actions/bookmarks/delete_all_preferences",
+          this.root + "actions/delete_all_preferences",
           {
             allId: this.source.allId
           });
@@ -101,7 +107,7 @@
       updateWeb() {
         this.showGallery = true;
         bbn.fn.post(
-          this.root + "actions/bookmarks/preview",
+          this.root + "actions/preview",
           {
             url: this.currentData.url,
           },
@@ -122,7 +128,7 @@
       },
       openUrl() {
         if (this.currentData.id) {
-          window.open(this.root + "actions/bookmarks/go/" + this.currentData.id, this.currentData.id);
+          window.open(this.root + "actions/go/" + this.currentData.id, this.currentData.id);
         }
         else {
           window.open(this.currentData.url, this.currentData.title);
@@ -132,7 +138,7 @@
         if (source.url) {
           window.open(source.url, source.text);
           bbn.fn.post(
-            this.root + "actions/bookmarks/count",
+            this.root + "actions/count",
             {
               id: source.id,
             },
@@ -146,7 +152,7 @@
       },
       openEditor(bookmark) {
         this.getPopup({
-          component: "appui-note-bookmarks-form",
+          component: "appui-bookmark-form",
           componentOptions: {
             source: bookmark
           },
@@ -185,7 +191,7 @@
           event.preventDefault();
         }
         else {
-          bbn.fn.post(this.root + "actions/bookmarks/move", {
+          bbn.fn.post(this.root + "actions/move", {
             source: nodeSrc.data.id,
             dest: nodeDest.data.id
           }, d => {
@@ -195,7 +201,7 @@
       checkUrl() {
         if (!this.currentData.id && bbn.fn.isURL(this.currentData.url)) {
           bbn.fn.post(
-            this.root + "actions/bookmarks/preview",
+            this.root + "actions/preview",
             {
               url: this.currentData.url,
             },
@@ -224,7 +230,7 @@
       },
       screenshot() {
         bbn.fn.post(
-          this.root + "actions/bookmarks/screenshot",
+          this.root + "actions/screenshot",
           {
             url: this.currentData.url,
             title: this.currentData.title,
@@ -240,7 +246,7 @@
       },
       add() {
         bbn.fn.post(
-          this.root + "actions/bookmarks/add",
+          this.root + "actions/add",
           {
             url: this.currentData.url,
             description: this.currentData.description,
@@ -259,6 +265,11 @@
       selectImage(img) {
         this.currentData.cover = img.data.content;
         this.showGallery = false;
+      },
+      addFolder() {
+        this.getPopup({
+          component: 'appui-bookmark-folder'
+        })
       },
       modify() {
         /*bbn.fn.post(
@@ -281,7 +292,7 @@
                       this.$refs.tree.reload();
                     }
                   });*/
-        bbn.fn.post(this.root + "actions/bookmarks/modify", {
+        bbn.fn.post(this.root + "actions/modify", {
           url: this.currentData.url,
           description: this.currentData.description,
           title: this.currentData.title,
@@ -296,7 +307,7 @@
       },
       deletePreference() {
         bbn.fn.post(
-          this.root + "actions/bookmarks/delete",
+          this.root + "actions/delete",
           {
             id: this.currentData.id
           },  d => {

@@ -1,6 +1,6 @@
 <bbn-form :prefilled="true"
           :validation="folder"
-          class="bookmarks-form-link"
+          class="appui-bookmark-form-link"
           :buttons="[]"
 >
   <div class="bbn-grid-fields info-container">
@@ -43,7 +43,7 @@
                 
       ></bbn-input>
     </div>          
-    <div class="appui-note-bookmarks-links-container bbn-widget bbn-grid-full"
+    <div class="appui-bookmark-links-container bbn-widget bbn-grid-full"
          ref="linksContainer"
          v-if="source.image"
          :style="link  ? 'border:1px solid' : 'border:none'"
@@ -56,15 +56,15 @@
       >
         <div class="bbn-flex-width">
           <div v-if="imageDom && source.image.image"
-               class="appui-note-bookmarks-link-image"
+               class="appui-bookmark-link-image"
           >
             <img :src="imageDom + ( source.image.img_path ? source.image.img_path : ref ) + '/' + source.image.image"
             >
           </div>
-           <div v-else class="appui-note-bookmarks-link-noimage">
+           <div v-else class="appui-bookmark-link-noimage">
             <i class="nf nf-fa-link bbn-xl"></i>
           </div>
-          <div class="appui-note-bookmarks-link-title bbn-flex-fill">
+          <div class="appui-bookmark-link-title bbn-flex-fill">
             <strong>
               <a :href="source.image.content.url"
                   class="bbn-p"
@@ -76,7 +76,7 @@
                   v-text="source.image.content.description"
             ></span>
           </div>
-          <div class="appui-note-bookmarks-link-actions bbn-vmiddle">
+          <div class="appui-bookmark-link-actions bbn-vmiddle">
             <bbn-button class=""
                         style="display: inline-block;"
                         @click="linkRemove"

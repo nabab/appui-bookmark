@@ -49,7 +49,7 @@
         class="bbn-medium"     
     ></div>
 
-    <div class="appui-note-bookmarks-links-container bbn-widget bbn-grid-full"
+    <div class="appui-bookmark-links-container bbn-widget bbn-grid-full"
           ref="linksContainer"
           v-if="source.showLink.image"
           style="border:1px solid"
@@ -62,14 +62,14 @@
       >
         <div class="bbn-flex-width">
           <div v-if="source.showLink.image.img_path && source.showLink.image.image"
-              class="appui-note-bookmarks-link-image">
+              class="appui-bookmark-link-image">
             <img :src="imageDom + source.showLink.image.img_path + source.showLink.image.image"
             >
           </div>
-          <div v-else class="appui-note-bookmarks-link-noimage">
+          <div v-else class="appui-bookmark-link-noimage">
             <i class="nf nf-fa-link bbn-xl"></i>
           </div>
-          <div class="appui-note-bookmarks-link-title bbn-flex-fill">
+          <div class="appui-bookmark-link-title bbn-flex-fill">
             <strong>
               <a :href="source.showLink.image.content.url"
                   class="bbn-p"

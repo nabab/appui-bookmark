@@ -28,20 +28,20 @@
       </div>
     </bbn-pane>
     <bbn-pane>
-      <appui-note-bookmarks-link v-if="showFormLink && !showFormFolder" :source="showLink"
+      <appui-bookmark-link v-if="showFormLink && !showFormFolder" :source="showLink"
       >
-      </appui-note-bookmarks-link>
-      <appui-note-bookmarks-folder v-else-if="showFormFolder && !showFormLink" :source="showFolder"
-      ></appui-note-bookmarks-folder>
-      <!--appui-note-bookmarks-list v-else-if="currentNode && (selectedType === 'folder') && !showFormFolder && !showFormLink">
-      </appui-note-bookmarks-list-->
-      <appui-note-bookmarks-show v-else-if="(showLink.text || showFolder.text) && !showFormFolder && !showFormLink"
+      </appui-bookmark-link>
+      <appui-bookmark-folder v-else-if="showFormFolder && !showFormLink" :source="showFolder"
+      ></appui-bookmark-folder>
+      <!--appui-bookmark-list v-else-if="currentNode && (selectedType === 'folder') && !showFormFolder && !showFormLink">
+      </appui-bookmark-list-->
+      <appui-bookmark-show v-else-if="(showLink.text || showFolder.text) && !showFormFolder && !showFormLink"
                                   :source="{showLink: showLink,showFolder:showFolder}"
       >
-      </appui-note-bookmarks-show>
+      </appui-bookmark-show>
 
 
     </bbn-pane>
   </bbn-splitter>
-  <!--appui-note-bookmarks-booksform></appui-note-bookmarks-booksform-->
+  <!--appui-bookmark-booksform></appui-note-bookmark-booksform-->
 </div>

@@ -26,7 +26,7 @@
     },
     data() {
       return {
-        root: appui.plugins['appui-note'] + '/',
+        root: appui.plugins['appui-bookmark'] + '/',
         checkTimeout: 0,
         delId: "",
         idParent: "",
@@ -63,7 +63,7 @@
       updateWeb() {
         this.showGallery = true;
         bbn.fn.post(
-          this.root + "actions/bookmarks/preview",
+          this.root + "actions/preview",
           {
             url: this.currentData.url,
           },
@@ -84,7 +84,7 @@
       },
       openUrl() {
         if (this.currentData.id) {
-          window.open(this.root + "actions/bookmarks/go/" + this.currentData.id, this.currentData.id);
+          window.open(this.root + "actions/go/" + this.currentData.id, this.currentData.id);
         }
         else {
           window.open(this.currentData.url, this.currentData.title);
@@ -94,7 +94,7 @@
         if (source.url) {
           window.open(source.url, source.text);
           bbn.fn.post(
-              this.root + "actions/bookmarks/count",
+              this.root + "actions/count",
               {
                 id: source.id,
               },
@@ -108,7 +108,7 @@
       },
       openEditor(bookmark) {
          this.getPopup({
-                component: "appui-note-bookmarks-form",
+                component: "appui-bookmark-form",
                 componentOptions: {
                   source: bookmark
                 },
@@ -147,7 +147,7 @@
           event.preventDefault();
         }
         else {
-          bbn.fn.post(this.root + "actions/bookmarks/move", {
+          bbn.fn.post(this.root + "actions/move", {
             source: nodeSrc.data.id,
             dest: nodeDest.data.id
           }, d => {
@@ -157,7 +157,7 @@
       checkUrl() {
         if (!this.currentData.id && bbn.fn.isURL(this.currentData.url)) {
           bbn.fn.post(
-            this.root + "actions/bookmarks/preview",
+            this.root + "actions/preview",
             {
               url: this.currentData.url,
             },
@@ -185,7 +185,7 @@
         if (this.currentNode.data.id) {
           this.$nextTick(() => {
             bbn.fn.post(
-              this.root + "actions/bookmarks/count",
+              this.root + "actions/count",
               {
                 id: this.currentNode.data.id,
               },
@@ -200,7 +200,7 @@
       },
       screenshot() {
         bbn.fn.post(
-          this.root + "actions/bookmarks/screenshot",
+          this.root + "actions/screenshot",
           {
             url: this.currentData.url,
             title: this.currentData.title,
@@ -216,7 +216,7 @@
       },
       add() {
         bbn.fn.post(
-          this.root + "actions/bookmarks/add",
+          this.root + "actions/add",
           {
             url: this.currentData.url,
             description: this.currentData.description,
@@ -257,7 +257,7 @@
                   this.$refs.tree.reload();
                 }
               });*/
-        bbn.fn.post(this.root + "actions/bookmarks/modify", {
+        bbn.fn.post(this.root + "actions/modify", {
           url: this.currentData.url,
           description: this.currentData.description,
           title: this.currentData.title,
@@ -272,7 +272,7 @@
       },
       deletePreference() {
         bbn.fn.post(
-          this.root + "actions/bookmarks/delete",
+          this.root + "actions/delete",
           {
             id: this.currentData.id
           },  d => {

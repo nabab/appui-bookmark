@@ -72,7 +72,7 @@
           return;
         }
         this.add();*/
-        return (this.root + "actions/bookmarks/" + (this.currentData.id ? "modify" : "add"));
+        return (this.root + "actions/" + (this.currentData.id ? "modify" : "add"));
       },
       treeParents() {
         if (this.bookmarkCp) {
@@ -88,7 +88,7 @@
       checkUrl() {
         if (!this.currentData.id && bbn.fn.isURL(this.currentData.url)) {
           bbn.fn.post(
-            this.root + "actions/bookmarks/preview",
+            this.root + "actions/preview",
             {
               url: this.currentData.url,
             },
@@ -114,7 +114,7 @@
       updateWeb() {
         this.showGallery = true;
         bbn.fn.post(
-          this.root + "actions/bookmarks/preview",
+          this.root + "actions/preview",
           {
             url: this.currentData.url,
           },
@@ -135,7 +135,7 @@
       },
       openUrl() {
         if (this.currentData.id) {
-          window.open(this.root + "actions/bookmarks/go/" + this.currentData.id, this.currentData.id);
+          window.open(this.root + "actions/go/" + this.currentData.id, this.currentData.id);
         }
         else {
           window.open(this.currentData.url, this.currentData.title);
@@ -145,7 +145,7 @@
         if (source.url) {
           window.open(source.url, source.text);
           bbn.fn.post(
-            this.root + "actions/bookmarks/count",
+            this.root + "actions/count",
             {
               id: source.id,
             },
@@ -159,7 +159,7 @@
       },
       getData () {
         this.currentSource = [];
-        bbn.fn.post(this.root + "actions/bookmarks/data", d => {
+        bbn.fn.post(this.root + "actions/data", d => {
           this.currentSource = d.data;
         });
       },
@@ -178,7 +178,7 @@
       },
       add() {
         bbn.fn.post(
-          this.root + "actions/bookmarks/add",
+          this.root + "actions/add",
           {
             url: this.currentData.url,
             description: this.currentData.description,
@@ -199,7 +199,7 @@
         this.showGallery = false;
       },
       modify() {
-        bbn.fn.post(this.root + "actions/bookmarks/modify", {
+        bbn.fn.post(this.root + "actions/modify", {
           url: this.currentData.url,
           description: this.currentData.description,
           title: this.currentData.title,

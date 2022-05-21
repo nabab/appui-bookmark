@@ -3,7 +3,7 @@
     props: ['source'],
     data(){
       return {
-        text: '',
+        text: ''
       }
     },
     computed: {

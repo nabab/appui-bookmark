@@ -16,7 +16,7 @@ class import
     /* open the importfile */
     $this->fp = fopen ($file, "r");
     $this->pref = $preferences;
-    $id_list = bbn\Appui\Option::getInstance()->fromCode("list", "bookmarks", "note", "appui");
+    $id_list = bbn\Appui\Option::getInstance()->fromCode("list", "bookmark", "appui");
     if (!($my_list = $this->pref->getByOption($id_list))) {
       $this->pref->add($id_list, []);
       $my_list = $this->pref->getByOption($id_list);
