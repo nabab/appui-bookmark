@@ -50,6 +50,7 @@
           clicked: 0,
           cover: ""
         },
+        openedWindow: {},
         links: 0,
         search: "",
         checkTimeout: 0,
