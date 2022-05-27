@@ -17,16 +17,13 @@
                 @scroll="scrolling"
                 @resize="resize"
                 @ready="update"
-                @reachBottom="addItems">
-      <appui-bookmark-item v-for="(block, i) in currentData"
-                            v-if="i < numberShown"
-                            :source="block"
-                            :key="block.id"
-                            :scroll-size="scrollSize"
-                            :container-size="containerSize"
-                            :scroll-top="scrolltop"
-                            :width="currentWidth"
-                            :ref="'item-'+ block.id"/>
+                @reachBottom="addItems"
+                axis="y">
+      <div class="container">
+        <appui-bookmark-item class="bookmark"
+                             :source="block"
+                             v-for="(block, i) in currentData"/>
+      </div>
     </bbn-scroll>
   </div>
 </div>
