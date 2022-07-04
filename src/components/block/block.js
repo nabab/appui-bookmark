@@ -12,7 +12,7 @@
     },
     data() {
       return {
-        root: appui.plugins['appui-note'] + '/',
+        root: appui.plugins['appui-bookmark'] + '/',
         links: 0,
         search: "",
         checkTimeout: 0,

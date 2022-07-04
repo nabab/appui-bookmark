@@ -36,7 +36,7 @@
     },
     data() {
       return {
-        root: appui.plugins['appui-note'] + '/',
+        root: appui.plugins['appui-bookmark'] + '/',
         currentData: {
           url: "",
           title: "", //input

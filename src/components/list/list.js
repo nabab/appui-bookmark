@@ -26,7 +26,7 @@
     },
     data() {
       return {
-        root: appui.plugins['appui-note'] + '/',
+        root: appui.plugins['appui-bookmark'] + '/',
         checkTimeout: 0,
         delId: "",
         idParent: "",
