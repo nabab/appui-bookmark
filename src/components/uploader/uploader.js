@@ -10,7 +10,7 @@
         title: {
           title: "Upload your bookmarks",
         },
-        root: appui.plugins['appui-note'] + '/',
+        root: appui.plugins['appui-bookmark'] + '/',
         bookmarksName: "bookmarks.html",
       };
     },

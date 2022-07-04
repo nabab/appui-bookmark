@@ -41,7 +41,7 @@
           appui.error(bbn._('The name of the folder cannot be an empty string'));
           return false;
         }
-        this.post(appui.plugins['appui-note'] + '/actions/bookmarks/insert', obj, (d) => {
+        this.post(appui.plugins['appui-bookmark'] + '/actions/bookmarks/insert', obj, (d) => {
           if (d.success) {
             bookmarks.showFormFolder = false;
             bookmarks.currentNode = {};

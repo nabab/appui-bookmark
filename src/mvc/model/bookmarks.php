@@ -9,7 +9,10 @@ use bbn\X;
 
 $id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
 //$id_cat = $model->inc->options->fromCode("cat", "bookmarks", "note", "appui");
-$tree = $model->getCachedModel($model->pluginUrl("appui-note")."/data/bookmarks", [], 3600);
+$tree = $model->getCachedModel($model->pluginUrl("appui-bookmark")."/data/bookmarks", [], 3600);
+
+//X::ddump($tree);
+
 $parents[] = [
   'text' => 'None',
   'value' => ''
@@ -45,7 +48,7 @@ $map = function ($ar) use (&$all_id, &$map) {
 
 $map($tree['items']);
 $mapper($tree['items']);
-$tree = $model->getCachedModel($model->pluginUrl("appui-note")."/data/bookmarks", [], 3600);
+$tree = $model->getCachedModel($model->pluginUrl("appui-bookmark")."/data/bookmarks", [], 3600);
 
 return [
   'parents' => $parents,
