@@ -7,7 +7,7 @@
               :text="title"
               :auto-upload="true"
               :download="true"
-							:save-url="root + 'actions/import'"
+							:save-url="root + 'actions/import' + isFolder"
               @success="success"/>
   </div>
 </div>

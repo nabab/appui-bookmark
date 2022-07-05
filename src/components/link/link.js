@@ -67,7 +67,6 @@
       submit(){
         if ( !this.editing ) {
           bbn.fn.log('SUBMIT', bookmarks.parent)
-          
           let object = {
               parent: this.parent.length ? this.parent : 'ROOT',
               description: this.source.description,

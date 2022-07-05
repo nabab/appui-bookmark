@@ -7,11 +7,12 @@ ini_set("xdebug.var_display_max_children", -1);
 ini_set("xdebug.var_display_max_data", -1);
 ini_set("xdebug.var_display_max_depth", -1);
 
+$destination = $ctrl->hasArguments() ? $ctrl->arguments[0] : null;
 
 class import
 {
   protected $parent = 9, $id_site = 'NULL', $pub = 0;
-  function __construct(bbn\User\Preferences $preferences, string $file)
+  function __construct(bbn\User\Preferences $preferences, string $file, string $destination = null)
   {
     /* open the importfile */
     $this->fp = fopen ($file, "r");
@@ -29,7 +30,7 @@ class import
       $this->folders = [];
       $this->folder =& $this->res;
       $this->parent = null;
-      $this->current_folder = $this->parent;
+      $this->current_folder = $destination;
       $this->charset = 'UTF-8';
       $this->count_folders = 0;
       $this->count_bookmarks = 0;
@@ -301,7 +302,7 @@ var_dump($dom->childNodes[2]->childNodes[1]->childNodes[2]->childNodes[2]);*/
 }*/
 //$html = file_get_contents();
 
-$importer = new import($ctrl->inc->pref, $ctrl->files['file']['tmp_name']);
+$importer = new import($ctrl->inc->pref, $ctrl->files['file']['tmp_name'], $destination);
 
 try {
   $ctrl->obj->success = $importer->import_netscape();
