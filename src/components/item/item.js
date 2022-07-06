@@ -44,7 +44,6 @@
           description: "", //textarea
           id: null,
           images: [],
-          image: "",
           screenshot_path: "",
           id_screenshot: "",
           clicked: 0,

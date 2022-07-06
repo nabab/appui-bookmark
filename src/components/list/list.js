@@ -52,7 +52,7 @@
             icon: "nf nf-fa-plus",
             text: bbn._("Create a new link"),
             notext: true,
-            action: this.newform,
+            action: this.addLink,
           },
           {
             icon: "nf nf-mdi-folder_plus",
@@ -85,6 +85,48 @@
       },
     },
     methods: {
+      openMenu(node) {
+        let menu = [];
+        if (!node.data.url) {
+          menu.push({
+            icon: "nf nf-fa-plus",
+            text: bbn._("Create a new link in this folder"),
+            action: () => {
+              this.getPopup({
+                component: "appui-bookmark-form",
+                title: bbn._("New Link")
+              });
+            }
+          });
+          menu.push({
+            icon: "nf nf-mdi-folder_plus",
+            text: bbn._("Create a subfolder in this folder"),
+            action: () => {
+              this.getPopup({
+                component: 'appui-bookmark-folder',
+                componentOptions: {
+                  //source: node,
+                  node: node
+                },
+              })
+            }
+          });
+          menu.push({
+            icon: "nf nf-mdi-folder_upload",
+            text: bbn._("Import from file in this folder"),
+            action: () => {
+              this.getPopup({
+                component: "appui-bookmark-uploader",
+                componentOptions: {
+                  //source: node,
+                  node: node
+                }
+              })
+            }
+          });
+          return menu;
+        }
+      },
       importing() {
         this.getPopup({
           component: "appui-bookmark-uploader",
@@ -95,10 +137,10 @@
       deleteAllBookmarks() {
         this.confirm(bbn._("Are you sure you want to delete all your bookmarks ?"), () => {
           bbn.fn.post(
-          this.root + "actions/delete_all_preferences",
-          {
-            allId: this.source.allId
-          });
+            this.root + "actions/delete_all_preferences",
+            {
+              allId: this.source.allId
+            });
         });
       },
       showScreenshot() {
@@ -159,7 +201,7 @@
           title: bookmark.id ? bbn._("Edit Form") : bbn._("New Form")
         });
       },
-      newform() {
+      addLink() {
         this.openEditor({});
       },
       contextMenu(bookmark) {

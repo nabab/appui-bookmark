@@ -22,13 +22,21 @@
   };
   return {
     props: {
+      node: {
+        type: Vue
+      },
+      source: {
+      	type: Object,
+        default() {
+          return {};
+        }
+      }
     },
     data() {
       return {
         root: appui.plugins['appui-bookmark'] + '/',
         checkTimeout: 0,
         delId: "",
-        idParent: "",
         currentNode: null,
         showGallery: false,
         visible: false,
@@ -39,7 +47,7 @@
           description: "", //textarea
           id: null,
           images: [],
-          image: "",
+          id_parent: this.node ? this.node.data.id : null,
           screenshot_path: "",
           id_screenshot: "",
           count: 0,
@@ -73,15 +81,18 @@
         }
         this.add();*/
         return (this.root + "actions/" + (this.currentData.id ? "modify" : "add"));
-      },
-      treeParents() {
-        if (this.bookmarkCp) {
-          return this.bookmarkCp.parents;
-        }
-        return null;
       }
     },
     methods: {
+      onSuccess(data) {
+        bbn.fn.log("OnSuccess Get : ", data);
+        if (data.success) {
+          if (this.node) {
+            bbn.fn.log("OnSuccess Get : ", this.node);
+            this.node.reload();
+          }
+        }
+      },
       showScreenshot() {
         this.visible = true;
       },
@@ -174,7 +185,6 @@
           cover: null,
           id_screenshot: ""
         };
-        this.idParent = "";
       },
       add() {
         bbn.fn.post(
