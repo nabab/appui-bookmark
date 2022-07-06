@@ -85,7 +85,7 @@
     },
     methods: {
       onSuccess(data) {
-        bbn.fn.log("OnSuccess Get : ", data);
+        bbn.fn.log("OnSuccess Get : ", data, this.node);
         if (data.success) {
           if (this.node) {
             bbn.fn.log("OnSuccess Get : ", this.node);

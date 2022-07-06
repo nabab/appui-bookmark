@@ -40,7 +40,6 @@
           description: "", //textarea
           id: null,
           images: [],
-          image: "",
           screenshot_path: "",
           id_screenshot: "",
           clicked: 0,
@@ -94,6 +93,10 @@
             action: () => {
               this.getPopup({
                 component: "appui-bookmark-form",
+                componentOptions: {
+                  //source: node,
+                  node: node
+                },
                 title: bbn._("New Link")
               });
             }
@@ -102,8 +105,9 @@
             icon: "nf nf-mdi-folder_plus",
             text: bbn._("Create a subfolder in this folder"),
             action: () => {
+              bbn.fn.log('add folder', node);
               this.getPopup({
-                component: 'appui-bookmark-folder',
+                component: 'appui-bookmark-addfolder',
                 componentOptions: {
                   //source: node,
                   node: node
@@ -193,6 +197,7 @@
         }
       },
       openEditor(bookmark) {
+        bbn.fn.log('add action', bookmark);
         this.getPopup({
           component: "appui-bookmark-form",
           componentOptions: {
@@ -287,6 +292,7 @@
         );
       },
       add() {
+        bbn.fn.log("error detected add");
         bbn.fn.post(
           this.root + "actions/add",
           {
@@ -310,7 +316,7 @@
       },
       addFolder() {
         this.getPopup({
-          component: 'appui-bookmark-folder'
+          component: 'appui-bookmark-addfolder'
         })
       },
       modify() {

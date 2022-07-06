@@ -19,10 +19,12 @@
     },
     computed: {
       isFolder() {
-        bbn.fn.log("isFolder :", this.currentNode);
-        if (!this.currentNode.data.url) {
-          bbn.fn.log("folder found : ", this.currentNode.data.id);
-          return ('/' + this.currentNode.data.id);
+        if (this.currentNode) {
+          bbn.fn.log("isFolder :", this.currentNode);
+          if (!this.currentNode.data.url) {
+            bbn.fn.log("folder found : ", this.currentNode.data.id);
+            return ('/' + this.currentNode.data.id);
+          }
         }
         return "";
       }
