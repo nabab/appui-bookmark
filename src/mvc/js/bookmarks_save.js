@@ -158,7 +158,6 @@
       filterItems(text){
         let tmp = bbn.fn.filter(this.source.bookmarks, 'parent', text);
         if ( tmp.length ){
-          
           bbn.fn.log('filter items', this.path)
           // IF I MISS DESCRIPTION AND URL ADD HERE!!
           return tmp.map( (a) => {

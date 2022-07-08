@@ -4,23 +4,24 @@
   return {
     mixins: [
       bbn.vue.keepCoolComponent
-    ],
+    ],/*
     props: {
       source: {
         offset: this.offset
       }
-    },
+    },*/
     data() {
       return {
-        root: appui.plugins['appui-bookmark'] + '/',
+        //root: appui.plugins['appui-bookmark'] + '/',
+        //BOOKMARKS DATA
+
+        //checkTimeout: 0,
+        //currentSource: [],
         links: 0,
         search: "",
-        checkTimeout: 0,
-        currentSource: [],
         numberShown: this.source.length >= 10 ? 10 : this.source.length,
         currentWidth: 0,
         scrolltop: 0,
-        offset: 0,
         scrollSize: 0,
         containerSize: 0,
         itemsPerPage: 0,
@@ -87,7 +88,7 @@
       resize() {
         this.currentWidth = this.getRef('scroll').containerWidth;
         this.update();
-      },
+      },/*
       isVisible() {
         return false;
       },
@@ -102,7 +103,7 @@
       },
       newform() {
         this.openEditor({});
-      },
+      },*//*
       contextMenu(bookmark) {
         return [
           {
@@ -148,7 +149,7 @@
             }
           );
         }
-      },
+      },*/
     },
     watch: {
       search() {

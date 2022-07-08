@@ -22,10 +22,26 @@
     return res;
   };
   return {
+    mixins: [
+      bbn.vue.keepCoolComponent
+    ],
     props: {
     },
     data() {
       return {
+        //BLOCK DATA
+        links: 0,
+        search: "",
+        currentWidth: 0,
+        scrolltop: 0,
+        scrollSize: 0,
+        containerSize: 0,
+        itemsPerPage: 0,
+        start: 0,
+        end: 0,
+        isInit: false,
+        isSorted: false,
+        //TREE DATA
         root: appui.plugins['appui-bookmark'] + '/',
         checkTimeout: 0,
         delId: "",
@@ -33,6 +49,8 @@
         currentNode: null,
         showGallery: false,
         visible: false,
+        drag: true,
+        currentSource: [],
         currentData: {
           url: "",
           title: "", //input
@@ -44,8 +62,6 @@
           id_screenshot: "",
           clicked: 0,
         },
-        currentSource: [],
-        drag: true,
         toolbarSource: [
           {
             icon: "nf nf-fa-plus",
@@ -80,11 +96,76 @@
         if (this.source.data.length) {
           res = fn(this.source.data);
         }
+        bbn.fn.log('ceci est un test');
         return res;
+      },
+      numberShown() {
+        let tmp = this.blockSource.length >= 10 ? 10 : this.blockSource.length;
+        return tmp;
+      },
+      currentDataBlock() {
+        return bbn.fn.order(this.blockSource, 'clicked', 'DESC');
+      },
+      numLinks() {
+        return this.blockSource.length;
       },
     },
     methods: {
+      //METHODS BOOKMARKS PART
+      updateData() {
+        this.currentData = bbn.fn.order(this.search ? bbn.fn.filter(this.blockSource,'text', this.search, 'contains') : this.blockSource , 'clicked', 'DESC');
+      },
+      addItems() {
+        if ( this.blockSource.length){
+          this.start = this.numberShown;
+          this.end = this.start + this.itemsPerPage;
+          if ( this.end > this.blockSource.length ){
+            this.end = this.blockSource.length;
+          }
+          for ( let i = this.start; i < this.end; i++ ){
+            this.numberShown++;
+          }
+        }
+      },
+      setItemsPerPage() {
+        if (this.blockSource.length) {
+          let firstItem = this.getRef("item-" + this.currentData[0].id);
+          if (!firstItem || !firstItem.$el) {
+            return;
+          }
+          let section = bbn.fn.outerHeight(firstItem.$el);
+          let itemsPerRow = 0;
+          let itemsPerColumn = 0;
+          for (; itemsPerRow * section < this.currentWidth ; itemsPerRow++);
+          for (; itemsPerColumn * section < this.containerSize ; itemsPerColumn++);
+          this.itemsPerPage = itemsPerColumn * itemsPerRow * 2;
+        }
+        return;
+      },
+      update() {
+        this.keepCool(
+          () => {
+            let scroll =  this.getRef('scroll');
+            this.currentWidth = scroll.containerWidth;
+            this.scrollSize = scroll.contentHeight;
+            this.containerSize = scroll.containerHeight;
+            this.setItemsPerPage();
+            if (!this.isInit && this.itemsPerPage) {
+              this.isInit = true;
+              this.addItems();
+            }
+          }, "init", 250);
+      },
+      scrolling() {
+        this.scrolltop = this.getRef('scroll').getRef('scrollContainer').scrollTop;
+      },
+      resize() {
+        this.currentWidth = this.getRef('scroll').containerWidth;
+        this.update();
+      },
+      //FUNCTION TREE PART
       openMenu(node) {
+        let tmp_tree = this.getRef('tree');
         let menu = [];
         if (!node.data.url) {
           menu.push({
@@ -95,7 +176,8 @@
                 component: "appui-bookmark-form",
                 componentOptions: {
                   //source: node,
-                  node: node
+                  node: node,
+                  tree: tmp_tree
                 },
                 title: bbn._("New Link")
               });
@@ -107,10 +189,12 @@
             action: () => {
               bbn.fn.log('add folder', node);
               this.getPopup({
+                icon: "nf-mdi-folder",
                 component: 'appui-bookmark-addfolder',
                 componentOptions: {
                   //source: node,
-                  node: node
+                  node: node,
+                  tree: tmp_tree
                 },
               })
             }
@@ -124,63 +208,66 @@
                 componentOptions: {
                   //source: node,
                   node: node
-                }
+                },
+                title: node.id ? bbn._("Edit Form") : bbn._("New Form")
               })
             }
           });
-          return menu;
         }
-      },
-      importing() {
-        this.getPopup({
-          component: "appui-bookmark-uploader",
-          componentOptions: null,
-          title: false,
-        });
-      },
-      deleteAllBookmarks() {
-        this.confirm(bbn._("Are you sure you want to delete all your bookmarks ?"), () => {
-          bbn.fn.post(
-            this.root + "actions/delete_all_preferences",
-            {
-              allId: this.source.allId
-            });
-        });
-      },
-      showScreenshot() {
-        this.visible = true;
-      },
-      updateWeb() {
-        this.showGallery = true;
-        bbn.fn.post(
-          this.root + "actions/preview",
-          {
-            url: this.currentData.url,
-          },
-          d => {
-            if (d.success) {
-              if (d.data.images) {
-                this.currentData.images = bbn.fn.map(d.data.images, (a) => {
-                  return {
-                    content: a,
-                    type: 'img'
-                  }
-                })
-              }
-            }
-            return false;
+        menu.push({
+          text: bbn._("Delete"),
+          icon: "nf nf-mdi-delete",
+          action: () => {
+            this.deleteItem(node);
           }
-        );
+        });
+        menu.push({
+          text: bbn._("Edit"),
+          icon: "nf nf-fa-edit",
+          action: () => {
+            this.selectTree(node);
+          }
+        });
+        return menu;
       },
-      openUrl() {
-        if (this.currentData.id) {
-          window.open(this.root + "actions/go/" + this.currentData.id, this.currentData.id);
+      editItem(node) {
+        bbn.fn.log('editItem() function');
+        if (node.data.url) {
+          bbn.fn.post(this.root + "actions/modify", {
+            url: this.currentData.url,
+            description: this.currentData.description,
+            title: this.currentData.title,
+            id: this.currentData.id,
+            cover: this.currentData.cover,
+            screenshot_path: this.currentData.screenshot_path,
+            id_screenshot: this.currentData.id_screenshot,
+          },  d => {
+            if (d.success) {
+              bbn.fn.log('success update item');
+              if (node.data.id_parent) {
+                node.reload();
+              }
+              else {
+                let tmp_tree = this.getRef('tree');
+                tmp_tree.reload();
+              }
+            } else {
+              bbn.fn.log('error update item');
+            }
+          });
+        } else {
+          bbn.fn.post(this.root + "actions/modify", {
+            title: this.currentData.title,
+            id: this.currentData.id
+          },  d => {
+            if (d.success) {
+            }
+          });
         }
-        else {
-          window.open(this.currentData.url, this.currentData.title);
-        }
+
       },
       openUrlSource(source) {
+        bbn.fn.log('OpenURLsource() function');
         if (source.url) {
           window.open(source.url, source.text);
           bbn.fn.post(
@@ -196,20 +283,34 @@
           );
         }
       },
-      openEditor(bookmark) {
-        bbn.fn.log('add action', bookmark);
-        this.getPopup({
-          component: "appui-bookmark-form",
-          componentOptions: {
-            source: bookmark
-          },
-          title: bookmark.id ? bbn._("Edit Form") : bbn._("New Form")
-        });
-      },
-      addLink() {
-        this.openEditor({});
+      openEditor(node) {
+        bbn.fn.log('openEditor() function');
+        let tmp_tree = this.getRef('tree');
+        if (node.url) {
+          bbn.fn.log('add action', node);
+          this.getPopup({
+            component: "appui-bookmark-form",
+            componentOptions: {
+              source: node,
+              tree: tmp_tree
+            },
+            title: node.id ? bbn._("Edit Form") : bbn._("New Form")
+          });
+        } else {
+          bbn.fn.log('add action', node);
+          this.getPopup({
+            component: "appui-bookmark-addfolder",
+            componentOptions: {
+              source: node,
+              tree: tmp_tree
+            },
+            title: node.id ? bbn._("Edit Form") : bbn._("New Form")
+          });
+        }
+
       },
       contextMenu(bookmark) {
+        bbn.fn.log('contextMenu() function');
         return [
           {
             text: bbn._("Edit"),
@@ -220,20 +321,8 @@
           }
         ];
       },
-      resetform() {
-        this.currentData = {
-          url: "",
-          title: "",
-          image: "",
-          description: "",
-          id: null,
-          images: [],
-          cover: null,
-          id_screenshot: ""
-        };
-        this.idParent = "";
-      },
-      isDragEnd(event, nodeSrc, nodeDest) {
+      onDrop(nodeSrc, nodeDest, event) {
+        bbn.fn.log('onDrop() function', arguments);
         if (nodeDest.data.url) {
           event.preventDefault();
         }
@@ -242,10 +331,24 @@
             source: nodeSrc.data.id,
             dest: nodeDest.data.id
           }, d => {
+            if (d.success) {
+              nodeSrc.reload();
+              nodeDest.reload();
+            }
           });
         }
       },
+      openUrl() {
+        bbn.fn.log('openURL() function');
+        if (this.currentData.id) {
+          window.open(this.root + "actions/go/" + this.currentData.id, this.currentData.id);
+        }
+        else {
+          window.open(this.currentData.url, this.currentData.title);
+        }
+      },
       checkUrl() {
+        bbn.fn.log('checkURL() function');
         if (!this.currentData.id && bbn.fn.isURL(this.currentData.url)) {
           bbn.fn.post(
             this.root + "actions/preview",
@@ -272,10 +375,12 @@
         }
       },
       selectTree(node) {
+        bbn.fn.log('selectTree() function');
         this.currentNode = node;
         this.openEditor(node.data);
       },
       screenshot() {
+        bbn.fn.log('screenshot() function');
         bbn.fn.post(
           this.root + "actions/screenshot",
           {
@@ -292,7 +397,7 @@
         );
       },
       add() {
-        bbn.fn.log("error detected add");
+        bbn.fn.log('add() function');
         bbn.fn.post(
           this.root + "actions/add",
           {
@@ -310,36 +415,26 @@
             }
           });
       },
+      addLink() {
+        bbn.fn.log('addLink() function');
+        this.openEditor({});
+      },
+      addFolder() {
+        let tmp_tree = this.getRef('tree');
+        this.getPopup({
+          component: 'appui-bookmark-addfolder',
+          componentOptions: {
+            tree: tmp_tree
+          },
+          title: bbn._("New Folder")
+        })
+      },
       selectImage(img) {
         this.currentData.cover = img.data.content;
         this.showGallery = false;
       },
-      addFolder() {
-        this.getPopup({
-          component: 'appui-bookmark-addfolder'
-        })
-      },
+
       modify() {
-        /*bbn.fn.post(
-                  "action/delete",
-                  {
-                    id: this.currentData.id
-                  },  d => {
-                    if (d.success) {
-                    }
-                  });
-                bbn.fn.post(
-                  "action/add",
-                  {
-                    url: this.currentData.url,
-                    description: this.currentData.description,
-                    title: this.currentData.title,
-                    id_parent:  this.idParent,
-                  },  d => {
-                    if (d.success) {
-                      this.$refs.tree.reload();
-                    }
-                  });*/
         bbn.fn.post(this.root + "actions/modify", {
           url: this.currentData.url,
           description: this.currentData.description,
@@ -353,6 +448,56 @@
           }
         });
       },
+      importing() {
+        this.getPopup({
+          component: "appui-bookmark-uploader",
+          componentOptions: null,
+          title: false,
+        });
+      },
+      deleteItem(node) {
+        bbn.fn.log('deleteItem() function', node);
+        let tmp_tree = this.getRef('tree');
+        bbn.fn.log('tree = ', tmp_tree);
+        let parent_node = node.parent;
+        bbn.fn.log('node parent', parent_node, node.data.id_parent);
+        bbn.fn.post(
+          this.root + "actions/delete",
+          {
+            id: node.data.id
+          },  d => {
+            if (d.success) {
+              bbn.fn.log('item delete success');
+              //this.getData(); appeler une fonction qui enleve le bookmark
+              if (node.data.id_parent) {
+                parent_node.reload();
+              }
+              else {
+                tmp_tree.reload();
+              }
+            }
+            else {
+              bbn.fn.log("error delete item");
+            }
+          });
+        return;
+      },
+      deleteAllBookmarks() {
+        this.confirm(bbn._("Are you sure you want to delete all your bookmarks ?"), () => {
+          bbn.fn.post(
+            this.root + "actions/delete_all_preferences",
+            {
+              allId: this.source.allId
+            },  d => {
+              if (d.success) {
+                let tmp_tree = this.getRef('tree');
+                bbn.fn.log("tree : ", tmp_tree);
+                tmp_tree.reload();
+                this.closest('bbn-container').reload();
+              }
+            });
+        });
+      },
       deletePreference() {
         bbn.fn.post(
           this.root + "actions/delete",
@@ -360,15 +505,61 @@
             id: this.currentData.id
           },  d => {
             if (d.success) {
+              let tmp_tree = this.getRef('tree');
+              tmp_tree.reload();
+              this.closest('bbn-container').reload();
             }
           });
         return;
       },
+      showScreenshot() {
+        this.visible = true;
+      },
+      updateWeb() {
+        this.showGallery = true;
+        bbn.fn.post(
+          this.root + "actions/preview",
+          {
+            url: this.currentData.url,
+          },
+          d => {
+            if (d.success) {
+              if (d.data.images) {
+                this.currentData.images = bbn.fn.map(d.data.images, (a) => {
+                  return {
+                    content: a,
+                    type: 'img'
+                  }
+                })
+              }
+            }
+            return false;
+          }
+        );
+      },
+      resetform() {
+        bbn.fn.log('resetForm() function');
+        this.currentData = {
+          url: "",
+          title: "",
+          image: "",
+          description: "",
+          id: null,
+          images: [],
+          cover: null,
+          id_screenshot: ""
+        };
+        this.idParent = "";
+      }
     },
     mounted() {
       let sc = this.getRef("scroll");
     },
     watch: {
+      search() {
+        this.numberShown = this.itemsPerPage;
+        this.updateData();
+      },
       'currentData.url'() {
         if (!this.currentData.id) {
           clearTimeout(this.checkTimeout);

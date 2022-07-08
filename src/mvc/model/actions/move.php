@@ -9,7 +9,7 @@ use bbn\X;
 
 if ($model->data['source'] && $model->data['dest']) {
   $tmp = $model->inc->pref->moveBit($model->data['source'], $model->data['dest']);
-  $model->data['res'] = true;
+  $model->data['res']['success'] = true;
 }
 
 return $model->data['res'];

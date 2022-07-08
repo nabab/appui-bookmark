@@ -25,6 +25,8 @@
       node: {
         type: Vue
       },
+      tree: {
+      },
       source: {
       	type: Object,
         default() {
@@ -87,9 +89,12 @@
       onSuccess(data) {
         bbn.fn.log("OnSuccess Get : ", data, this.node);
         if (data.success) {
-          if (this.node) {
+          if (this.node && this.node.id_parent) {
             bbn.fn.log("OnSuccess Get : ", this.node);
             this.node.reload();
+          }
+          else {
+            this.tree.reload();
           }
         }
       },

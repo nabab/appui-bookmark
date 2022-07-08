@@ -22,7 +22,8 @@
       <div class="container">
         <appui-bookmark-item class="bookmark"
                              :source="block"
-                             v-for="(block, i) in currentData"/>
+                             v-for="(block, i) in currentData"
+                             :key="block.id"/>
       </div>
     </bbn-scroll>
   </div>

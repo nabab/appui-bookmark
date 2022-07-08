@@ -14,8 +14,10 @@
       node: {
         type: Vue
       },
+      tree: {
+      },
       source: {
-      	type: Object,
+        type: Object,
         default() {
           return {};
         }
@@ -32,7 +34,8 @@
         currentData: {
           title: "", //input
           id: null,
-          id_parent: this.node ? this.node.data.id : null
+          id_parent: this.node ? this.node.data.id : null,
+          icon: "nf nf-custom-folder"
         },
         currentSource: [],
         drag: true,
@@ -48,6 +51,7 @@
         return res;
       },
       formAction() {
+        bbn.fn.log("formAction");
         if (this.source.id) {
           this.currentData.title = this.source.text;
           this.currentData.id = this.source.id;
@@ -59,9 +63,13 @@
       onSuccess(data) {
         bbn.fn.log("OnSuccess Get : ", data, this.node);
         if (data.success) {
-          if (this.node) {
+          if (this.node && this.node.id_parent) {
+            this.node.icon = "nf nf-custom-folder";
             bbn.fn.log("OnSuccess Get : ", this.node);
             this.node.reload();
+          }
+          else {
+            this.tree.reload();
           }
         }
       },

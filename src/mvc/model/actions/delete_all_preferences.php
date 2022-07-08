@@ -7,9 +7,11 @@
 /** @var $model \bbn\Mvc\Model*/
 
 use bbn\X;
-
+$res = ['success' => false];
 $id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
 $my_list = $model->inc->pref->getByOption($id_list);
-$res['success'] = $model->inc->pref->deleteBits($my_list['id']);
 
+//revoir le return du deleteBits
+$model->inc->pref->deleteBits($my_list['id']);
+$res['success'] = true;
 return $res;
