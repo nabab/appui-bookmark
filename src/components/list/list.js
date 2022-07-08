@@ -469,7 +469,7 @@
             if (d.success) {
               bbn.fn.log('item delete success');
               //this.getData(); appeler une fonction qui enleve le bookmark
-              if (node.data.id_parent) {
+              if (parent_node) {
                 parent_node.reload();
               }
               else {
