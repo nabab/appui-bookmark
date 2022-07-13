@@ -7,51 +7,57 @@
 /** @var $model \bbn\Mvc\Model*/
 use bbn\X;
 
-$id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
-//$id_cat = $model->inc->options->fromCode("cat", "bookmarks", "note", "appui");
-$tree = $model->getModel($model->pluginUrl("appui-bookmark")."/data/bookmarks");
+if ($model->hasData('limit')) {
 
-//X::ddump($tree);
+  $id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
+  $cfg = $model->inc->pref->getClassCfg();
+  $f = $cfg['arch']['user_options_bits'];
+  $user_option = $model->inc->pref->getByOption($id_list);
+  $where = [[
+    'field' => $f['id_user_option'],
+    'value' => $user_option['id']
+  ], [
+    'field' => 'JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.url\'))',
+    'operator' => "isnotnull"
+  ]];
 
-$parents[] = [
-  'text' => 'None',
-  'value' => ''
-];
-$all_id = [];
-
-$mapper = function ($ar) use (&$parents, &$mapper) {
-  foreach ($ar as $a) {
-    if (empty($a['url'])) {
-      $parents[] = [
-        'text' => $a['text'],
-        'value' => $a['id']
-      ];
-      if (!empty($a['items'])) {
-        $mapper($a['items']);
-      }
-    }
-  }
-};
-
-$map = function ($ar) use (&$all_id, &$map) {
-  foreach($ar as $a) {
-    $all_id[] = [
-      'text' => $a['text'],
-      'value' => $a['id'],
-      'img' => $a['cover']
-    ];
-    if (!empty($a['items'])) {
-      $map($a['items']);
-    }
-  }
-};
-
-$map($tree['items']);
-$mapper($tree['items']);
-//$tree = $model->getCachedModel($model->pluginUrl("appui-bookmark")."/data/bookmarks", [], 3600);
-
-return [
-  /*'parents' => $parents,
+  $bits = $model->db->rselectAll(
+    [
+      'table' => $cfg['tables']['user_options_bits'],
+      'fields' => [
+        $f['id'],
+        $f['id_option'],
+        $f['num'],
+        $f['text'],
+        $f['cfg'],
+        "clicked" => "IFNULL (JSON_EXTRACT($f[cfg], 'clicked'), 0)"
+      ],
+      'where' => [
+        'conditions' => $where
+      ],
+      'order' => [[
+        'field' => "clicked",
+        'dir' => 'DESC'
+      ]],
+      'start' => $model->data['start'],
+      'limit' => $model->data['limit']
+    ]
+  );
+  $num = $model->db->count(
+    [
+      'table' => $cfg['tables']['user_options_bits'],
+      'where' => [
+        'conditions' => $where
+      ]
+    ]
+  );
+  return [
+    'data' => $bits,
+    'total' => $num,
+    'last' => $model->db->last(),
+    'id_option' => $user_option['id']
+    /*'parents' => $parents,
   'allId' => $all_id,
   'data' => $tree*/
-];
+  ];
+}

@@ -33,7 +33,6 @@
       return {
         //BLOCK DATA
         links: 0,
-        search: "",
         currentWidth: 0,
         scrolltop: 0,
         scrollSize: 0,

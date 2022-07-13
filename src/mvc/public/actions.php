@@ -11,6 +11,13 @@ if ($ctrl->hasArguments()) {
   if (count($ctrl->arguments)) {
     $params = '/' . X::join($ctrl->arguments, '/');
   }
-  //X::ddump($ctrl->pluginUrl('appui-bookmark'). '/actions/' . $action . $params);
+  /*
+  if ($action === 'go') {
+    $ctrl->setMode('dom');
+    $ctrl->addToObj($ctrl->pluginUrl('appui-bookmark'). '/actions/go/index' . $params, $ctrl->post, true);
+  }
+  else {*/
   $ctrl->addToObj($ctrl->pluginUrl('appui-bookmark'). '/actions/' . $action . $params, $ctrl->post, true);
+  /*}
+  //X::ddump($ctrl->pluginUrl('appui-bookmark'). '/actions/' . $action . $params);*/
 }
