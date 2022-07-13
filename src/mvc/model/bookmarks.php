@@ -51,7 +51,7 @@ $mapper($tree['items']);
 //$tree = $model->getCachedModel($model->pluginUrl("appui-bookmark")."/data/bookmarks", [], 3600);
 
 return [
-  'parents' => $parents,
+  /*'parents' => $parents,
   'allId' => $all_id,
-  'data' => $tree
+  'data' => $tree*/
 ];

@@ -4,5 +4,9 @@
 
 use bbn\X;
 
-$ctrl->setColor("#2597F0", "white");
-$ctrl->combo(_('My bookmarks'), true);
+if (!empty($ctrl->post['limit'])) {
+  $ctrl->action();
+} else {
+  $ctrl->setColor("#2597F0", "white");
+  $ctrl->combo(_('My bookmarks'));
+}

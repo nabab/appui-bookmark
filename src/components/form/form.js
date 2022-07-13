@@ -28,7 +28,7 @@
       tree: {
       },
       source: {
-      	type: Object,
+        type: Object,
         default() {
           return {};
         }
@@ -232,12 +232,40 @@
       this.bookmarkCp = this.closest('bbn-container').getComponent();
     },
     watch: {
-      'currentData.url'() {
+      'currentData.url'(v) {
         if (!this.currentData.id) {
           clearTimeout(this.checkTimeout);
           this.checkTimeout = setTimeout(() => {
             this.checkUrl();
           }, 250);
+        } else if (this.currentData.url) {
+          clearTimeout(this.checkTimeout);
+          this.checkTimeout = setTimeout(() => {
+            bbn.fn.post(
+              this.root + "actions/preview",
+              {
+                url: this.currentData.url,
+              },
+              d => {
+                if (d.success) {
+                  this.currentData.title = d.data.title;
+                  this.currentData.description = d.data.description;
+                  this.currentData.cover = d.data.cover ||null;
+                  if (d.data.images) {
+                    this.currentData.images = bbn.fn.map(d.data.images, (a) => {
+                      return {
+                        content: a,
+                        type: 'img'
+                      }
+                    })
+                  }
+                }
+                return false;
+              }
+            );
+          }, 250);
+        } else {
+          bbn.fn.log('dataURL : ', this.currentData.url, 'v : ', v);
         }
       },
     }

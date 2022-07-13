@@ -82,6 +82,7 @@
         this.position = this.$el.offsetTop;
       },
       openEditor(bookmark) {
+        bbn.fn.log('editor catch');
         this.getPopup({
           component: "appui-bookmark-form",
           componentOptions: {
@@ -131,11 +132,13 @@
         this.visible = true;
       },
       contextMenu(bookmark) {
+
         return [
           {
             text: bbn._("Edit"),
             icon: "nf nf-fa-edit",
             action: () => {
+              bbn.fn.log(bookmark);
               this.openEditor(bookmark)
             }
           },

@@ -52,7 +52,6 @@
                        ></bbn-gallery>
         </bbn-floater>
       </div>
-
       <div>
         <bbn-button	v-if="currentData.id_screenshot"
                     @click="showScreenshot"

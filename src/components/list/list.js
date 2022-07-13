@@ -23,6 +23,8 @@
   };
   return {
     mixins: [
+      bbn.vue.basicComponent,
+      bbn.vue.listComponent,
       bbn.vue.keepCoolComponent
     ],
     props: {
@@ -51,7 +53,8 @@
         visible: false,
         drag: true,
         currentSource: [],
-        currentData: {
+        editedfilter: [],
+        /*editfilter: {
           url: "",
           title: "", //input
           image: "",
@@ -61,7 +64,7 @@
           screenshot_path: "",
           id_screenshot: "",
           clicked: 0,
-        },
+        },*/
         toolbarSource: [
           {
             icon: "nf nf-fa-plus",
@@ -93,10 +96,12 @@
     computed: {
       blockSource() {
         let res = [];
+        /*
         if (this.source.data.length) {
           res = fn(this.source.data);
         }
         bbn.fn.log('ceci est un test');
+        */
         return res;
       },
       numberShown() {
@@ -112,9 +117,6 @@
     },
     methods: {
       //METHODS BOOKMARKS PART
-      updateData() {
-        this.currentData = bbn.fn.order(this.search ? bbn.fn.filter(this.blockSource,'text', this.search, 'contains') : this.blockSource , 'clicked', 'DESC');
-      },
       addItems() {
         if ( this.blockSource.length){
           this.start = this.numberShown;
@@ -129,7 +131,7 @@
       },
       setItemsPerPage() {
         if (this.blockSource.length) {
-          let firstItem = this.getRef("item-" + this.currentData[0].id);
+          let firstItem = this.getRef("item-" + this.filteredData[0].id);
           if (!firstItem || !firstItem.$el) {
             return;
           }
@@ -234,13 +236,13 @@
         bbn.fn.log('editItem() function');
         if (node.data.url) {
           bbn.fn.post(this.root + "actions/modify", {
-            url: this.currentData.url,
-            description: this.currentData.description,
-            title: this.currentData.title,
-            id: this.currentData.id,
-            cover: this.currentData.cover,
-            screenshot_path: this.currentData.screenshot_path,
-            id_screenshot: this.currentData.id_screenshot,
+            url: this.editedfilter.url,
+            description: this.editedfilter.description,
+            title: this.editedfilter.title,
+            id: this.editedfilter.id,
+            cover: this.editedfilter.cover,
+            screenshot_path: this.editedfilter.screenshot_path,
+            id_screenshot: this.editedfilter.id_screenshot,
           },  d => {
             if (d.success) {
               bbn.fn.log('success update item');
@@ -257,8 +259,8 @@
           });
         } else {
           bbn.fn.post(this.root + "actions/modify", {
-            title: this.currentData.title,
-            id: this.currentData.id
+            title: this.editedfilter.title,
+            id: this.editedfilter.id
           },  d => {
             if (d.success) {
             }
@@ -277,7 +279,7 @@
             },
             d => {
               if (d.success) {
-                this.currentData.clicked++;
+                this.editedfilter.clicked++;
               }
             }
           );
@@ -340,28 +342,28 @@
       },
       openUrl() {
         bbn.fn.log('openURL() function');
-        if (this.currentData.id) {
-          window.open(this.root + "actions/go/" + this.currentData.id, this.currentData.id);
+        if (this.editedfilter.id) {
+          window.open(this.root + "actions/go/" + this.editedfilter.id, this.editedfilter.id);
         }
         else {
-          window.open(this.currentData.url, this.currentData.title);
+          window.open(this.editedfilter.url, this.editedfilter.title);
         }
       },
       checkUrl() {
         bbn.fn.log('checkURL() function');
-        if (!this.currentData.id && bbn.fn.isURL(this.currentData.url)) {
+        if (!this.editedfilter.id && bbn.fn.isURL(this.editedfilter.url)) {
           bbn.fn.post(
             this.root + "actions/preview",
             {
-              url: this.currentData.url,
+              url: this.editedfilter.url,
             },
             d => {
               if (d.success) {
-                this.currentData.title = d.data.title;
-                this.currentData.description = d.data.description;
-                this.currentData.cover = d.data.cover ||null;
+                this.editedfilter.title = d.data.title;
+                this.editedfilter.description = d.data.description;
+                this.editedfilter.cover = d.data.cover ||null;
                 if (d.data.images) {
-                  this.currentData.images = bbn.fn.map(d.data.images, (a) => {
+                  this.editedfilter.images = bbn.fn.map(d.data.images, (a) => {
                     return {
                       content: a,
                       type: 'img'
@@ -384,14 +386,14 @@
         bbn.fn.post(
           this.root + "actions/screenshot",
           {
-            url: this.currentData.url,
-            title: this.currentData.title,
-            id: this.currentData.id
+            url: this.editedfilter.url,
+            title: this.editedfilter.title,
+            id: this.editedfilter.id
           },
           d => {
             if (d.success) {
-              this.currentData.screenshot_path = d.data.screenshot_path;
-              this.currentData.id_screenshot = d.data.id_screenshot;
+              this.editedfilter.screenshot_path = d.data.screenshot_path;
+              this.editedfilter.id_screenshot = d.data.id_screenshot;
             }
           }
         );
@@ -401,15 +403,15 @@
         bbn.fn.post(
           this.root + "actions/add",
           {
-            url: this.currentData.url,
-            description: this.currentData.description,
-            title: this.currentData.title,
+            url: this.editedfilter.url,
+            description: this.editedfilter.description,
+            title: this.editedfilter.title,
             id_parent:  this.idParent,
-            cover: this.currentData.cover,
+            cover: this.editedfilter.cover,
           },  d => {
             if (d.success) {
-              this.currentData.id = d.id_bit;
-              this.currentData.clicked++;
+              this.editedfilter.id = d.id_bit;
+              this.editedfilter.clicked++;
               appui.success();
               this.screenshot();
             }
@@ -430,19 +432,19 @@
         })
       },
       selectImage(img) {
-        this.currentData.cover = img.data.content;
+        this.editedfilter.cover = img.data.content;
         this.showGallery = false;
       },
 
       modify() {
         bbn.fn.post(this.root + "actions/modify", {
-          url: this.currentData.url,
-          description: this.currentData.description,
-          title: this.currentData.title,
-          id: this.currentData.id,
-          cover: this.currentData.cover,
-          screenshot_path: this.currentData.screenshot_path,
-          id_screenshot: this.currentData.id_screenshot,
+          url: this.editedfilter.url,
+          description: this.editedfilter.description,
+          title: this.editedfilter.title,
+          id: this.editedfilter.id,
+          cover: this.editedfilter.cover,
+          screenshot_path: this.editedfilter.screenshot_path,
+          id_screenshot: this.editedfilter.id_screenshot,
         },  d => {
           if (d.success) {
           }
@@ -502,7 +504,7 @@
         bbn.fn.post(
           this.root + "actions/delete",
           {
-            id: this.currentData.id
+            id: this.editedfilter.id
           },  d => {
             if (d.success) {
               let tmp_tree = this.getRef('tree');
@@ -520,12 +522,12 @@
         bbn.fn.post(
           this.root + "actions/preview",
           {
-            url: this.currentData.url,
+            url: this.editedfilter.url,
           },
           d => {
             if (d.success) {
               if (d.data.images) {
-                this.currentData.images = bbn.fn.map(d.data.images, (a) => {
+                this.editedfilter.images = bbn.fn.map(d.data.images, (a) => {
                   return {
                     content: a,
                     type: 'img'
@@ -539,7 +541,7 @@
       },
       resetform() {
         bbn.fn.log('resetForm() function');
-        this.currentData = {
+        this.editedfilter = {
           url: "",
           title: "",
           image: "",
@@ -561,7 +563,7 @@
         this.updateData();
       },
       'currentData.url'() {
-        if (!this.currentData.id) {
+        if (!this.editedfilter.id) {
           clearTimeout(this.checkTimeout);
           this.checkTimeout = setTimeout(() => {
             this.checkUrl();
@@ -570,7 +572,7 @@
       },
       currentNode(v) {
         if (v) {
-          this.currentData = {
+          this.editedfilter = {
             url: v.data.url || "",
             title: v.data.text || "",
             description: v.data.description || "",
