@@ -24,10 +24,10 @@
       <div class="bbn-overlay bbn-flex-height appui-bookmark-block">
         <div class="bbn-padded bbn-b bbn-grid-fields">
           <bbn-input placeholder="Search a link"
-                     v-model="search"></bbn-input>
+                     v-model="filter"></bbn-input>
           <div class="bbn-m">
             <span>
-              {{currentDataBlock.length}}
+              {{currentTotal}}
             </span>
             <label><?=_("links")?></label>
           </div>
@@ -42,9 +42,9 @@
                       axis="y">
             <div class="container">
               <appui-bookmark-item class="bookmark"
-                                   :source="block"
-                                   v-for="(block, i) in currentDataBlock"
-                                   :key="block.id"/>
+                                   v-for="(block, i) in filteredData"
+                                   :source="block.data"
+                                   :key="block.data.id"/>
             </div>
           </bbn-scroll>
         </div>

@@ -1,26 +1,6 @@
 // Javascript Document
 
 (()=> {
-  const fn = (arr, res = []) => {
-    bbn.fn.each(arr, a => {
-      if (a.url) {
-        res.push({
-          cover: a.cover ||"",
-          description: a.description || "",
-          id: a.id,
-          id_screenshot: a.id_screenshot || null,
-          screenshot_path: a.screenshot_path || "",
-          text: a.text,
-          url: a.url,
-          clicked: a.clicked || 0
-        });
-      }
-      else if (a.items) {
-        fn(a.items, res);
-      }
-    });
-    return res;
-  };
   return {
     mixins: [
       bbn.vue.basicComponent,
@@ -42,6 +22,7 @@
         end: 0,
         isInit: false,
         isSorted: false,
+        filter: "",
         //TREE DATA
         root: appui.plugins['appui-bookmark'] + '/',
         checkTimeout: 0,
@@ -52,7 +33,7 @@
         visible: false,
         drag: true,
         currentSource: [],
-        editedfilter: [],
+        editedfilter: {},
         /*editfilter: {
           url: "",
           title: "", //input
@@ -107,9 +88,6 @@
         let tmp = this.blockSource.length >= 10 ? 10 : this.blockSource.length;
         return tmp;
       },
-      currentDataBlock() {
-        return bbn.fn.order(this.blockSource, 'clicked', 'DESC');
-      },
       numLinks() {
         return this.blockSource.length;
       },
@@ -129,7 +107,7 @@
         }
       },
       setItemsPerPage() {
-        if (this.blockSource.length) {
+        if (this.filteredData.length) {
           let firstItem = this.getRef("item-" + this.filteredData[0].id);
           if (!firstItem || !firstItem.$el) {
             return;
@@ -210,7 +188,7 @@
                   //source: node,
                   node: node
                 },
-                title: node.id ? bbn._("Edit Form") : bbn._("New Form")
+                title: node && node.id ? bbn._("Edit Form") : bbn._("New Form")
               })
             }
           });
@@ -295,7 +273,7 @@
               source: node,
               tree: tmp_tree
             },
-            title: node.id ? bbn._("Edit Form") : bbn._("New Form")
+            title: node && node.id ? bbn._("Edit Form") : bbn._("New Form")
           });
         } else {
           bbn.fn.log('add action', node);
@@ -305,10 +283,22 @@
               source: node,
               tree: tmp_tree
             },
-            title: node.id ? bbn._("Edit Form") : bbn._("New Form")
+            title: node && node.id ? bbn._("Edit Form") : bbn._("New Form")
           });
         }
-
+      },
+      linkAdd(node) {
+        bbn.fn.log('openEditor() function');
+        let tmp_tree = this.getRef('tree');
+        bbn.fn.log('add action', node);
+        this.getPopup({
+          component: "appui-bookmark-form",
+          componentOptions: {
+            source: node,
+            tree: tmp_tree
+          },
+          title: node && node.id ? bbn._("Edit Form") : bbn._("New Form")
+        });
       },
       contextMenu(bookmark) {
         bbn.fn.log('contextMenu() function');
@@ -418,7 +408,7 @@
       },
       addLink() {
         bbn.fn.log('addLink() function');
-        this.openEditor({});
+        this.linkAdd({});
       },
       addFolder() {
         let tmp_tree = this.getRef('tree');
@@ -434,7 +424,6 @@
         this.editedfilter.cover = img.data.content;
         this.showGallery = false;
       },
-
       modify() {
         bbn.fn.post(this.root + "actions/modify", {
           url: this.editedfilter.url,
@@ -557,6 +546,30 @@
       let sc = this.getRef("scroll");
     },
     watch: {
+      filter(v, ov) {
+        if (!v || (v.length < 2)) {
+          if (this.currentFilters.conditions.length) {
+            this.unfilter();
+          }
+        }
+        else {
+          let cond = [
+            {
+              field: "url",
+              operator: "contains",
+              value: v
+            },
+            {
+              field: "text",
+              operator: "contains",
+              value: v
+            }
+          ];
+          this.currentFilters.conditions.splice(0, this.currentFilters.length, cond);
+					this.currentFilters.logic = "OR";
+        	this.updateData();
+        }
+      },
       search() {
         this.numberShown = this.itemsPerPage;
         this.updateData();

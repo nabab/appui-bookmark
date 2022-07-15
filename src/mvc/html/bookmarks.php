@@ -2,4 +2,5 @@
                      :sortable="true"
                      :filterable="true"
                      :pageable="true"
-                     :url="root + 'actions'"/>
+                     :url="root + 'actions'"
+                     :search="true"/>
