@@ -27,7 +27,7 @@
                      v-model="filter"></bbn-input>
           <div class="bbn-m">
             <span>
-              {{currentTotal}}
+              {{total}}
             </span>
             <label><?=_("links")?></label>
           </div>
