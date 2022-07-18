@@ -52,4 +52,5 @@ if ($model->data['id'] && ($bit = $model->inc->pref->getBit($model->data['id']))
     $res['error'] = $e->getMessage();
   }
 }
+
 return $res;

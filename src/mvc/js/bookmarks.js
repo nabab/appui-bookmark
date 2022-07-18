@@ -6,9 +6,6 @@
       return {
         root: appui.plugins['appui-bookmark'] + '/',
       };
-    },
-    mounted() {
-      let sc = this.getRef("scroll");
     }
   };
 })();

@@ -5,7 +5,8 @@
     mixins: [
       bbn.vue.basicComponent,
       bbn.vue.listComponent,
-      bbn.vue.keepCoolComponent
+      bbn.vue.keepCoolComponent,
+      bbn.vue.resizerComponent
     ],
     data() {
       return {
@@ -22,6 +23,7 @@
         root: appui.plugins['appui-bookmark'] + '/',
         checkTimeout: 0,
         editedfilter: {},
+        elements: [],
         toolbarSource: [
           {
             icon: "nf nf-fa-plus",
@@ -50,14 +52,25 @@
         ]
       }
     },
+    computed: {
+      numberShown() {
+        return this.elements.length;
+      }
+    },
     methods: {
-      //METHODS BOOKMARKS PART
+      /**
+       * setup bookmarks page items
+       *
+       * @method setItemsPerPage
+       */
       setItemsPerPage() {
         if (this.filteredData.length) {
-          let firstItem = this.getRef("item-" + this.filteredData[0].id);
+          let firstItem = this.getRef("item-" + this.filteredData[0].data.id);
+          bbn.fn.log('First time', firstItem);
           if (!firstItem || !firstItem.$el) {
             return;
           }
+          /** @var {Number} section Height of the first element in the list */
           let section = bbn.fn.outerHeight(firstItem.$el);
           let itemsPerRow = 0;
           let itemsPerColumn = 0;
@@ -67,7 +80,11 @@
         }
         return;
       },
-      //UPDATE PART OF BLOCK
+      /**
+       * update part of bookmarks items
+       *
+       * @method update
+       */
       update() {
         this.keepCool(
           () => {
@@ -82,6 +99,12 @@
             }
           }, "init", 250);
       },
+      afterUpdate() {
+        bbn.fn.log('afterUpdate function', this.filteredData.length);
+        bbn.fn.each(this.filteredData, a => {
+          this.elements.push(a.data);
+        });
+      },
       scrolling() {
         this.scrolltop = this.getRef('scroll').getRef('scrollContainer').scrollTop;
       },
@@ -89,20 +112,11 @@
         this.currentWidth = this.getRef('scroll').containerWidth;
         this.update();
       },
-      //ADD BOOKMARKS TO THE LIST IN THE BLOCK
-      addItems() {
-        if ( this.blockSource.length){
-          this.start = this.numberShown;
-          this.end = this.start + this.itemsPerPage;
-          if ( this.end > this.blockSource.length ){
-            this.end = this.blockSource.length;
-          }
-          for ( let i = this.start; i < this.end; i++ ) {
-            this.numberShown++;
-          }
-        }
-      },
-      //MENU OF THE RIGHT CLICK
+      /**
+       * Menu of the right click
+       *
+       * @method openMenu
+       */
       openMenu(node) {
         let tmp_tree = this.getRef('tree');
         let menu = [];
@@ -169,7 +183,24 @@
         });
         return menu;
       },
-      //FORM FOR ADD/EDIT LINK
+      /**
+       * Add bookmarks to the list in the block
+       *
+       * @method addItems
+       */
+      addItems() {
+        bbn.fn.log("function addItems");
+        if (this.total && (this.total > this.numberShown)) {
+          this.start = this.numberShown;
+          this.currentLimit = this.itemsPerPage;
+          this.updateData();
+        }
+      },
+      /**
+       * Form add / edit for a new bookmark
+       *
+       * @method addLink
+       */
       addLink(node) {
         bbn.fn.log('openEditor() function');
         let tmp_tree = this.getRef('tree');
@@ -208,6 +239,11 @@
           });
         }
       },
+      /**
+       * Form add / edit for a new folder
+       *
+       * @method addFolder
+       */
       addFolder() {
         let tmp_tree = this.getRef('tree');
         this.getPopup({
@@ -218,7 +254,11 @@
           title: bbn._("New Folder")
         })
       },
-      //IMPORT FROM FILE
+      /**
+       * Importing file from toolbar
+       *
+       * @method importing
+       */
       importing() {
         this.getPopup({
           component: "appui-bookmark-uploader",
@@ -226,7 +266,11 @@
           title: false,
         });
       },
-      //CHECK IF URL IS VALID AND RELOAD THE FORM IF NECESSARY
+      /**
+       * check if the url is valid and reload the form if necessary
+       *
+       * @method checkUrl
+       */
       checkUrl() {
         bbn.fn.log('checkURL() function');
         if (!this.editedfilter.id && bbn.fn.isURL(this.editedfilter.url)) {
@@ -254,7 +298,11 @@
           );
         }
       },
-      //DELETE ELEMENT
+      /**
+       * delete element
+       *
+       * @method deleteItem
+       */
       deleteItem(node) {
         bbn.fn.log('deleteItem() function', node);
         let tmp_tree = this.getRef('tree');
@@ -298,6 +346,11 @@
             });
         });
       },
+      /**
+       * drag and drop
+       *
+       * @method onDrop
+       */
       //DRAG AND DROP
       onDrop(nodeSrc, nodeDest, event) {
         bbn.fn.log('onDrop() function', arguments);
@@ -319,6 +372,7 @@
     },
     watch: {
       filter(v, ov) {
+        this.elements.splice(0, this.elements.length);
         if (!v || (v.length < 2)) {
           this.data.filter = "";
           this.updateData();

@@ -32,6 +32,7 @@
     methods: {
       success() {
         this.closest('bbn-container').reload();
+        this.closest('bbn-floater').close();
       },
     },
   }

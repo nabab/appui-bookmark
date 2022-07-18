@@ -58,5 +58,14 @@ if ($model->hasData('limit')) {
       'dir' => 'DESC'
     ]]
   ]);
-  return $grid->getDatatable(true);
+  $data = $grid->getDatatable(true);
+  foreach($data['data'] as &$d) {
+    foreach($d as $i => $a) {
+      if ($a === "null") {
+        $d[$i] = null;
+      }
+    }
+  }
+  unset($d);
+  return $data;
 }

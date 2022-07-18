@@ -2,7 +2,8 @@
 
 <div class="bbn-overlay appui-bookmark-list">
   <bbn-splitter orientation="horizontal"
-                :resizable="true">
+                :resizable="true"
+                :collapsible="true">
 
     <bbn-pane :size="300">
       <div class="bbn-flex-height bbn-overlay">
@@ -21,7 +22,7 @@
     </bbn-pane>
 
     <bbn-pane>
-      <div class="bbn-overlay bbn-flex-height appui-bookmark-block">
+      <div class="bbn-overlay bbn-flex-height list-block">
         <div class="bbn-padded bbn-b bbn-grid-fields">
           <bbn-input placeholder="Search a link"
                      v-model="filter"></bbn-input>
@@ -38,13 +39,14 @@
                       @scroll="scrolling"
                       @resize="resize"
                       @ready="update"
-                      @reachBottom="addItems"
+                      @reachbottom="addItems"
                       axis="y">
             <div class="container">
               <appui-bookmark-item class="bookmark"
-                                   v-for="(block, i) in filteredData"
-                                   :source="block.data"
-                                   :key="block.data.id"/>
+                                   v-for="(block, i) in elements"
+                                   :source="block"
+                                   :ref="'item-' + block.id"
+                                   :key="block.id"/>
             </div>
           </bbn-scroll>
         </div>
