@@ -48,6 +48,7 @@
           image: "",
           description: "", //textarea
           id: null,
+          cover: "",
           images: [],
           id_parent: this.node ? this.node.data.id : null,
           screenshot_path: "",
@@ -100,6 +101,26 @@
       },
       showScreenshot() {
         this.visible = true;
+      },
+      /**
+       * Screenshot of puppeteer
+       *
+       * @method puppeteer_preview
+       */
+      puppeteer_preview() {
+        bbn.fn.log('puppeteer_preview() function');
+        bbn.fn.post(
+          this.root + "actions/puppeteer_preview",
+          this.currentData,
+          d => {
+            if (d.success) {
+              if (d.image) {
+                this.currentData.cover = d.image;
+              }
+            }
+            return false;
+          }
+        );
       },
       checkUrl() {
         if (!this.currentData.id && bbn.fn.isURL(this.currentData.url)) {

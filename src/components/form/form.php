@@ -58,6 +58,10 @@
                     class="bbn-padded"
                     text="show screenshot"
                     ></bbn-button>
+        <bbn-button	@click="puppeteer_preview"
+                    class="bbn-padded"
+                    text="website preview"
+                    ></bbn-button>
         <bbn-floater v-if="visible"
                      :closable="true"
                      :width="800"
