@@ -27,6 +27,8 @@
       },
       tree: {
       },
+      status: {
+      },
       source: {
         type: Object,
         default() {
@@ -42,9 +44,9 @@
         currentNode: null,
         showGallery: false,
         visible: false,
-        currentData: {
+        currentData: this.source || {
           url: "",
-          title: "", //input
+          text: "", //input
           image: "",
           description: "", //textarea
           id: null,
@@ -53,11 +55,12 @@
           id_parent: this.node ? this.node.data.id : null,
           screenshot_path: "",
           id_screenshot: "",
-          count: 0,
+          count: 0
         },
         currentSource: [],
         drag: true,
         bookmarkCp: null,
+      	formDisabled: false
       }
     },
     computed: {
@@ -69,20 +72,6 @@
         return res;
       },
       formAction() {
-        if (this.source.id) {
-          this.currentData.url = this.source.url;
-          this.currentData.title = this.source.text;
-          this.currentData.id_screenshot = this.source.id_screenshot;
-          this.currentData.screenshot_path = this.source.screenshot_path;
-          this.currentData.id = this.source.id;
-          this.currentData.description = this.source.description;
-          this.currentData.cover = this.source.cover;
-        }
-        /*if (this.currentData.id) {
-          this.modify();
-          return;
-        }
-        this.add();*/
         return (this.root + "actions/" + (this.currentData.id ? "modify" : "add"));
       }
     },
@@ -109,10 +98,12 @@
        */
       puppeteer_preview() {
         bbn.fn.log('puppeteer_preview() function');
+        this.formDisabled = true;
         bbn.fn.post(
           this.root + "actions/puppeteer_preview",
           this.currentData,
           d => {
+            this.formDisabled = false;
             if (d.success) {
               if (d.image) {
                 this.currentData.cover = d.image;
@@ -212,6 +203,35 @@
           id_screenshot: ""
         };
       },
+      updateform() {
+        if (this.currentData.url) {
+          clearTimeout(this.checkTimeout);
+          this.checkTimeout = setTimeout(() => {
+            bbn.fn.post(
+              this.root + "actions/preview",
+              {
+                url: this.currentData.url,
+              },
+              d => {
+                if (d.success) {
+                  this.currentData.title = d.data.title;
+                  this.currentData.description = d.data.description;
+                  this.currentData.cover = d.data.cover ||null;
+                  if (d.data.images) {
+                    this.currentData.images = bbn.fn.map(d.data.images, (a) => {
+                      return {
+                        content: a,
+                        type: 'img'
+                      }
+                    })
+                  }
+                }
+                return false;
+              }
+            );
+          }, 250);
+        }
+      },
       add() {
         bbn.fn.post(
           this.root + "actions/add",
@@ -258,32 +278,6 @@
           clearTimeout(this.checkTimeout);
           this.checkTimeout = setTimeout(() => {
             this.checkUrl();
-          }, 250);
-        } else if (this.currentData.url) {
-          clearTimeout(this.checkTimeout);
-          this.checkTimeout = setTimeout(() => {
-            bbn.fn.post(
-              this.root + "actions/preview",
-              {
-                url: this.currentData.url,
-              },
-              d => {
-                if (d.success) {
-                  this.currentData.title = d.data.title;
-                  this.currentData.description = d.data.description;
-                  this.currentData.cover = d.data.cover ||null;
-                  if (d.data.images) {
-                    this.currentData.images = bbn.fn.map(d.data.images, (a) => {
-                      return {
-                        content: a,
-                        type: 'img'
-                      }
-                    })
-                  }
-                }
-                return false;
-              }
-            );
           }, 250);
         } else {
           bbn.fn.log('dataURL : ', this.currentData.url, 'v : ', v);

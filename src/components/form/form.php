@@ -1,10 +1,10 @@
 <!-- HTML Document -->
 
-<div class="appui-bookmark-form bbn-w-100">
+<div class="appui-bookmark-form bbn-w-100 bbn-h-100">
   <bbn-form :action="formAction"
             :source="currentData"
-            v-model="currentData"
             @success="onSuccess"
+            :disabled="formDisabled"
             class="bbn-m">
     <div class="bbn-padded bbn-grid-fields" >
       <label><?=_("URL")?></label>
@@ -19,7 +19,7 @@
       </div>
 
       <label><?=_("Title")?></label>
-      <bbn-input v-model="currentData.title"
+      <bbn-input v-model="currentData.text"
                  :required="true"
                  placeholder="Name of the URL"></bbn-input>
 
@@ -30,10 +30,25 @@
         <img :src="currentData.cover"
              style="max-width: 200px; max-height: 200px; width: auto; height: auto">
       </div>
-      <div v-if="currentData.cover">
+      <div>
+        <bbn-button	v-if="status"
+                    @click="updateform"
+                    class="bbn-padded"
+                    text="autofill"
+                    ></bbn-button>
+        <bbn-button	v-if="currentData.id_screenshot"
+                    @click="showScreenshot"
+                    class="bbn-padded"
+                    text="show screenshot"
+                    ></bbn-button>
+        <bbn-button	@click="puppeteer_preview"
+                    class="bbn-padded"
+                    text="website preview"
+                    ></bbn-button>
         <bbn-button v-if="currentData.images"
                     @click="showGallery = true"
-                    text="change cover picture"></bbn-button>
+                    text="change cover picture">
+        </bbn-button>
       </div>
       <div>
         <bbn-floater v-if="showGallery"
@@ -53,15 +68,6 @@
         </bbn-floater>
       </div>
       <div>
-        <bbn-button	v-if="currentData.id_screenshot"
-                    @click="showScreenshot"
-                    class="bbn-padded"
-                    text="show screenshot"
-                    ></bbn-button>
-        <bbn-button	@click="puppeteer_preview"
-                    class="bbn-padded"
-                    text="website preview"
-                    ></bbn-button>
         <bbn-floater v-if="visible"
                      :closable="true"
                      :width="800"
@@ -71,6 +77,14 @@
                      @close="visible = false">
           <img :src="root + 'media/image/' + currentData.id_screenshot">
         </bbn-floater>
+      </div>
+    </div>
+    <div v-if="formDisabled"
+         class="bbn-overlay bbn-middle bbn-modal">
+      <div class="bbn-block bbn-padded bbn-lg">
+        <bbn-loadicon/> &nbsp;
+        <?= _("Please wait") ?><br>
+        <?= _("A virtual browser is visiting the link") ?>
       </div>
     </div>
   </bbn-form>

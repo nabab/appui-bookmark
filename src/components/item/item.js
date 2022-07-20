@@ -86,7 +86,8 @@
         this.getPopup({
           component: "appui-bookmark-form",
           componentOptions: {
-            source: bookmark
+            source: bookmark,
+            status: bookmark.id ? true : false
           },
           title: bookmark.id ? bbn._("Edit Form") : bbn._("New Form")
         });
@@ -117,6 +118,37 @@
           );
         }
       },
+      updateItem(bookmark) {
+        bbn.fn.post(
+          this.root + "actions/modify", {
+            //A CHANGER
+            id: bookmark.id,
+            id_option: bookmark.id_option,
+            num: bookmark.num,
+            text: bookmark.text,
+            cover: bookmark.cover,
+            url: bookmark.url,
+            id_screenshot: bookmark.id_screenshot,
+            screenshot_path: bookmark.screenshot_path,
+          }, d => {
+            if (d.success) {
+              bbn.fn.log('success');
+            }
+          });
+      },
+      puppeteer_screenshot(bookmark) {
+        bbn.fn.post(
+          this.root + "actions/puppeteer_preview",
+          bookmark,
+          d => {
+            if (d.success) {
+              if (d.image) {
+                bookmark.cover = d.image;
+                this.updateItem(bookmark);
+              }
+            }
+          });
+      },
       deletePreference(bookmark) {
         bbn.fn.post(
           this.root + "actions/delete",
@@ -132,14 +164,21 @@
         this.visible = true;
       },
       contextMenu(bookmark) {
-
         return [
           {
             text: bbn._("Edit"),
             icon: "nf nf-fa-edit",
             action: () => {
               bbn.fn.log(bookmark);
-              this.openEditor(bookmark)
+              this.openEditor(bookmark);
+            }
+          },
+          {
+            text: bbn._("Screenshot"),
+            icon: "nf nf-mdi-fullscreen",
+            action: () => {
+              bbn.fn.log(bookmark);
+              this.puppeteer_screenshot(bookmark);
             }
           },
           {
