@@ -83,9 +83,6 @@
             bbn.fn.log("OnSuccess Get : ", this.node);
             this.node.reload();
           }
-          else {
-            this.tree.reload();
-          }
         }
       },
       showScreenshot() {

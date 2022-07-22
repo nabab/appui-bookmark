@@ -2,38 +2,6 @@
 
 (() => {
   return {
-    props: {
-      heightMin: 0, // à définir
-      heightMax: 0, // à définir
-      source: {
-        type: Object,
-        required: true,
-      },
-      scrollSize: {
-        type: Number,
-        validator(v) {
-          return v >= 0;
-        }
-      },
-      containerSize: {
-        type: Number,
-        validator(v) {
-          return v >= 0;
-        }
-      },
-      scrollTop: {
-        type: Number,
-        validator(v) {
-          return v >= 0;
-        }
-      },
-      width: {
-        type: Number,
-        validator(v) {
-          return v >= 0;
-        }
-      },
-    },
     data() {
       return {
         root: appui.plugins['appui-bookmark'] + '/',
@@ -48,50 +16,71 @@
           id_screenshot: "",
           clicked: 0,
           cover: ""
-        },
-        openedWindow: {},
-        links: 0,
-        search: "",
-        checkTimeout: 0,
-        currentSource: [],
-        totalHeight: 0,
-        position: null,
-        sectionTop: null,
-        visibleSize: 0,
-        viewMax: 0,
-        viewMin: 0,
+        }
       }
     },
-    mounted() {
-      this.updatePosition();
-    },
-    computed: {
-      isVisible() {
-        if (this.containerSize && this.scrollSize && (this.position !== null)) {
-          this.viewMin = this.scrollTop - this.containerSize;
-          this.viewMax = this.scrollTop + (2 * this.containerSize);
-          if ((this.viewMin < this.position) && (this.position < this.viewMax)) {
-            return true;
-          }
-        }
-        return false;
-      },
-    },
     methods: {
-      updatePosition() {
-        this.position = this.$el.offsetTop;
-      },
-      openEditor(bookmark) {
-        bbn.fn.log('editor catch');
-        this.getPopup({
-          component: "appui-bookmark-form",
-          componentOptions: {
-            source: bookmark,
-            status: bookmark.id ? true : false
+      /**
+       * Context menu linked with component-list
+       *
+       * @Method contextMenu
+       */
+      contextMenu(bookmark) {
+        let list = this.closest('appui-bookmark-list');
+        return [
+          {
+            text: bbn._("Copy URL"),
+            icon: "nf nf-fa-copy",
+            action: () => {
+              bbn.fn.copy(bookmark.url);
+            }
           },
-          title: bookmark.id ? bbn._("Edit Form") : bbn._("New Form")
-        });
+          {
+            text: bbn._("Edit"),
+            icon: "nf nf-fa-edit",
+            action: () => {
+              list.addLink(bookmark);
+            }
+          },
+          {
+            text: bbn._("Screenshot"),
+            icon: "nf nf-mdi-fullscreen",
+            action: () => {
+              this.puppeteer_screenshot(bookmark);
+            }
+          },
+          {
+            text: bbn._("Delete"),
+            icon: "nf nf-mdi-delete",
+            action: () => {
+              list.deleteItem(bookmark);
+            }
+          }
+        ];
       },
+      /**
+       * Screenshot with puppeteer for get a preview
+       *
+       * @Method puppeteer_screenshot
+       */
+      puppeteer_screenshot(bookmark) {
+        bbn.fn.post(
+          this.root + "actions/puppeteer_preview",
+          bookmark,
+          d => {
+            if (d.success) {
+              if (d.image) {
+                bookmark.cover = d.image;
+                this.updateItem(bookmark);
+              }
+            }
+          });
+      },
+      /**
+       * Open Url of a bookmark
+       *
+       * @Method openUrlSource
+       */
       openUrlSource(source) {
         if (source.url) {
           window.open(source.url, source.text);
@@ -99,25 +88,29 @@
             this.root + "actions/count",
             {
               id: source.id,
-              searchCover: !source.cover
             },
             d => {
-              if (d.success) {
-                this.source.clicked++;
-                if (d.data) {
-                  if (this.source.cover === undefined) {
-                    this.$set(this.source, 'cover', d.data.path);
-                  }
-                  else {
-                    this.source.cover = d.data.path;
-                  }
-                }
-                this.closest('appui-bookmark-block').updateData();
-              }
+              if (d.success) this.source.clicked++;
             }
           );
+          if (!source.cover) {
+            bbn.fn.post(
+              this.root + "actions/puppeteer_preview", source,
+              d => {
+                if (d.success) {
+                  this.$set(this.source, 'cover', d.image);
+                  this.updateItem(source);
+                }
+              }
+            );
+          }
         }
       },
+      /**
+       * Update all element on the bookmark
+       *
+       * @Method updateItem
+       */
       updateItem(bookmark) {
         bbn.fn.post(
           this.root + "actions/modify", {
@@ -132,69 +125,9 @@
             screenshot_path: bookmark.screenshot_path,
           }, d => {
             if (d.success) {
-              bbn.fn.log('success');
             }
           });
       },
-      puppeteer_screenshot(bookmark) {
-        bbn.fn.post(
-          this.root + "actions/puppeteer_preview",
-          bookmark,
-          d => {
-            if (d.success) {
-              if (d.image) {
-                bookmark.cover = d.image;
-                this.updateItem(bookmark);
-              }
-            }
-          });
-      },
-      deletePreference(bookmark) {
-        bbn.fn.post(
-          this.root + "actions/delete",
-          {
-            id: bookmark.id
-          },  d => {
-            if (d.success) {
-            }
-          });
-        return;
-      },
-      showScreenshot() {
-        this.visible = true;
-      },
-      contextMenu(bookmark) {
-        return [
-          {
-            text: bbn._("Edit"),
-            icon: "nf nf-fa-edit",
-            action: () => {
-              bbn.fn.log(bookmark);
-              this.openEditor(bookmark);
-            }
-          },
-          {
-            text: bbn._("Screenshot"),
-            icon: "nf nf-mdi-fullscreen",
-            action: () => {
-              bbn.fn.log(bookmark);
-              this.puppeteer_screenshot(bookmark);
-            }
-          },
-          {
-            text: bbn._("Delete"),
-            icon: "nf nf-mdi-delete",
-            action: () => {
-              this.deletePreference(bookmark);
-            }
-          }
-        ];
-      },
-    },
-    watch: {
-      width() {
-        this.updatePosition();
-      }
     }
   }
 })();

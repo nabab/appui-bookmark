@@ -45,14 +45,14 @@ if ($model->hasData('limit')) {
       $f['id_option'],
       $f['num'],
       $f['text'],
+      $f['id_parent'],
       'cover' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.cover\')), \'\')',
-      //'description' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.description\')), \'\')',
       'url' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.url\')), \'\')',
       'id_screenshot' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.id_screenshot\')), \'\')',
       'screenshot_path' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.screenshot_path\')), \'\')',
       "clicked" => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.clicked\')), 0)'
     ],
-    'where' => $where,
+    'filters' => $where,
     'order' => [[
       'field' => "clicked",
       'dir' => 'DESC'

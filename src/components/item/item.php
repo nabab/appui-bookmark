@@ -1,6 +1,6 @@
 <!-- HTML Document -->
 
-<section class="appui-bookmark-item bbn-nomargin">
+<section class="appui-bookmark-item bbn-nomargin bbn-unselectable">
   <bbn-context
                :context="true"
                :source="contextMenu(source)"

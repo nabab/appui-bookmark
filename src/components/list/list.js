@@ -20,6 +20,7 @@
         end: 0,
         isInit: false,
         filter: "",
+        loading: true,
         root: appui.plugins['appui-bookmark'] + '/',
         checkTimeout: 0,
         editedfilter: {},
@@ -66,7 +67,6 @@
       setItemsPerPage() {
         if (this.filteredData.length) {
           let firstItem = this.getRef("item-" + this.filteredData[0].data.id);
-          bbn.fn.log('First time', firstItem);
           if (!firstItem || !firstItem.$el) {
             return;
           }
@@ -100,10 +100,10 @@
           }, "init", 250);
       },
       afterUpdate() {
-        bbn.fn.log('afterUpdate function', this.filteredData.length);
         bbn.fn.each(this.filteredData, a => {
           this.elements.push(a.data);
         });
+        this.loading = false;
       },
       scrolling() {
         this.scrolltop = this.getRef('scroll').getRef('scrollContainer').scrollTop;
@@ -140,7 +140,6 @@
             icon: "nf nf-mdi-folder_plus",
             text: bbn._("Create a subfolder in this folder"),
             action: () => {
-              bbn.fn.log('add folder', node);
               this.getPopup({
                 icon: "nf-mdi-folder",
                 component: 'appui-bookmark-addfolder',
@@ -178,7 +177,7 @@
           text: bbn._("Edit"),
           icon: "nf nf-fa-edit",
           action: () => {
-            this.selectTree(node);
+            this.addLink(node);
           }
         });
         return menu;
@@ -188,11 +187,10 @@
        *
        * @method addItems
        */
-      addItems() {
-        bbn.fn.log("function addItems");
+      addItems(limit) {
         if (this.total && (this.total > this.numberShown)) {
           this.start = this.numberShown;
-          this.currentLimit = this.itemsPerPage;
+          this.currentLimit = bbn.fn.isNumber(limit) ? limit : this.itemsPerPage;
           this.updateData();
         }
       },
@@ -202,12 +200,9 @@
        * @method addLink
        */
       addLink(node) {
-        bbn.fn.log('openEditor() function');
         let tmp_tree = this.getRef('tree');
         if (!node) {
-          bbn.fn.log('ADD FUNCTION() function');
           let tmp_tree = this.getRef('tree');
-          bbn.fn.log('add action', node);
           this.getPopup({
             component: "appui-bookmark-form",
             componentOptions: {
@@ -218,17 +213,28 @@
           });
         }
         else if (node.url) {
-          bbn.fn.log('add action', node);
           this.getPopup({
             component: "appui-bookmark-form",
             componentOptions: {
               source: node,
+              status: node.id ? true : false,
               tree: tmp_tree
             },
             title: node && node.id ? bbn._("Edit Form") : bbn._("New Form")
           });
-        } else {
-          bbn.fn.log('add action', node);
+        }
+        else if (node.data.url) {
+          this.getPopup({
+            component: "appui-bookmark-form",
+            componentOptions: {
+              source: node.data,
+              status: node.data.id ? true : false,
+              tree: tmp_tree
+            },
+            title: node.data.id ? bbn._("Edit Form") : bbn._("New Form")
+          });
+        }
+        else {
           this.getPopup({
             component: "appui-bookmark-addfolder",
             componentOptions: {
@@ -272,7 +278,6 @@
        * @method checkUrl
        */
       checkUrl() {
-        bbn.fn.log('checkURL() function');
         if (!this.editedfilter.id && bbn.fn.isURL(this.editedfilter.url)) {
           bbn.fn.post(
             this.root + "actions/preview",
@@ -304,30 +309,59 @@
        * @method deleteItem
        */
       deleteItem(node) {
-        bbn.fn.log('deleteItem() function', node);
-        let tmp_tree = this.getRef('tree');
-        bbn.fn.log('tree = ', tmp_tree);
-        let parent_node = node.parent;
-        bbn.fn.log('node parent', parent_node, node.data.id_parent);
-        bbn.fn.post(
-          this.root + "actions/delete",
-          {
-            id: node.data.id
-          },  d => {
-            if (d.success) {
-              bbn.fn.log('item delete success');
-              //this.getData(); appeler une fonction qui enleve le bookmark
-              if (parent_node) {
-                parent_node.reload();
+        if (node.parent) {
+
+          let tmp_tree = this.getRef('tree');
+          let parent_node = node.parent;
+          let idx = bbn.fn.search(this.elements, { id: node.data.id});
+
+          bbn.fn.post(
+            this.root + "actions/delete",
+            {
+              id: node.data.id
+            },  d => {
+              if (d.success) {
+                if (idx >= 0) {
+                  this.elements.splice(idx, 1);
+                  this.addItems(1);
+                }
+                if (parent_node) {
+                  parent_node.reload();
+                }
+                else {
+                  tmp_tree.reload();
+                }
               }
-              else {
-                tmp_tree.reload();
+            });
+        } else {
+
+          let tmp_tree = this.getRef('tree');
+          let idNode = node.id;
+          let treeNode = tmp_tree.getNodeByUid(node.id);
+          let parentNode = tmp_tree.getNodeByUid(node.id_parent);
+          let idx = bbn.fn.search(this.elements, { id: node.id});
+
+          bbn.fn.post(
+            this.root + "actions/delete",
+            {
+              id: node.id
+            },  d => {
+              if (d.success) {
+                if (treeNode) {
+                  treeNode.parent.reload();
+                }
+                else if (parentNode) {
+                  let treeParent = parentNode.getRef('tree');
+                  bbn.fn.log(treeParent.currentData);
+                }
+
+                if (this.elements[idx]) {
+                  this.elements.splice(idx, 1);
+                  this.addItems(1);
+                }
               }
-            }
-            else {
-              bbn.fn.log("error delete item");
-            }
-          });
+            });
+        }
         return;
       },
       deleteAllBookmarks() {
@@ -339,7 +373,6 @@
             },  d => {
               if (d.success) {
                 let tmp_tree = this.getRef('tree');
-                bbn.fn.log("tree : ", tmp_tree);
                 tmp_tree.reload();
                 this.closest('bbn-container').reload();
               }
@@ -353,7 +386,6 @@
        */
       //DRAG AND DROP
       onDrop(nodeSrc, nodeDest, event) {
-        bbn.fn.log('onDrop() function', arguments);
         if (nodeDest.data.url) {
           event.preventDefault();
         }

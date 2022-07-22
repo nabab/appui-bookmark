@@ -53,4 +53,12 @@
       </div>
     </bbn-pane>
   </bbn-splitter>
+    <div v-if="loading"
+       class="bbn-overlay bbn-middle bbn-modal">
+    <div class="bbn-block bbn-padded bbn-lg">
+      <bbn-loadicon/> &nbsp;
+      <?= _("Please wait") ?><br>
+      <?= _("A virtual browser is visiting the link") ?>
+    </div>
+  </div>
 </div>
