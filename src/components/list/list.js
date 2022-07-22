@@ -334,13 +334,11 @@
               }
             });
         } else {
-
-          let tmp_tree = this.getRef('tree');
           let idNode = node.id;
+          let tmp_tree = this.getRef('tree');
           let treeNode = tmp_tree.getNodeByUid(node.id);
           let parentNode = tmp_tree.getNodeByUid(node.id_parent);
           let idx = bbn.fn.search(this.elements, { id: node.id});
-
           bbn.fn.post(
             this.root + "actions/delete",
             {
@@ -352,7 +350,11 @@
                 }
                 else if (parentNode) {
                   let treeParent = parentNode.getRef('tree');
-                  bbn.fn.log(treeParent.currentData);
+                  for (let a = 0; a < treeParent.currentData.length; a++) {
+                    if (treeParent.currentData[a].data.id === idNode) {
+                      treeParent.currentData.splice(a, 1);
+                    }
+                  }
                 }
 
                 if (this.elements[idx]) {
