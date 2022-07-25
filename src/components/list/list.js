@@ -10,6 +10,7 @@
     ],
     data() {
       return {
+        selectionMode: false,
         links: 0,
         currentWidth: 0,
         scrolltop: 0,
@@ -54,6 +55,30 @@
       }
     },
     computed: {
+      actionSource() {
+        return [
+          {
+            text: bbn._("Take screenshot"),
+            value: 1,
+            action: () => {
+              bbn.fn.each(this.currentSelected, a => {
+                let item = this.getRef('item-' + a);
+                if (item) {
+                  item.puppeteer_screenshot();
+                }
+              });
+              this.selectionMode = false;
+            }
+          },
+          {
+            text: bbn._("Delete"),
+            value: 2,
+            action: () => {
+              this.deleteItem()
+            }
+          }
+        ]
+      },
       numberShown() {
         return this.elements.length;
       }
@@ -101,6 +126,7 @@
       },
       afterUpdate() {
         bbn.fn.each(this.filteredData, a => {
+          bbn.fn.log('ELEMENTS = ', a.data);
           this.elements.push(a.data);
         });
         this.loading = false;
@@ -202,14 +228,12 @@
       addLink(node) {
         let tmp_tree = this.getRef('tree');
         if (!node) {
-          let tmp_tree = this.getRef('tree');
           this.getPopup({
             component: "appui-bookmark-form",
             componentOptions: {
-              source: node,
               tree: tmp_tree
             },
-            title: node && node.id ? bbn._("Edit Form") : bbn._("New Form")
+            title: bbn._("New Bookmark")
           });
         }
         else if (node.url) {
@@ -220,7 +244,7 @@
               status: node.id ? true : false,
               tree: tmp_tree
             },
-            title: node && node.id ? bbn._("Edit Form") : bbn._("New Form")
+            title: node && node.id ? bbn._("Edit Bookmark") : bbn._("New Bookmark")
           });
         }
         else if (node.data.url) {
@@ -231,7 +255,7 @@
               status: node.data.id ? true : false,
               tree: tmp_tree
             },
-            title: node.data.id ? bbn._("Edit Form") : bbn._("New Form")
+            title: node.data.id ? bbn._("Edit Bookmark") : bbn._("New Bookmark")
           });
         }
         else {
@@ -241,7 +265,7 @@
               source: node,
               tree: tmp_tree
             },
-            title: node && node.id ? bbn._("Edit Form") : bbn._("New Form")
+            title: node && node.id ? bbn._("Edit Folder") : bbn._("New Folder")
           });
         }
       },
@@ -286,9 +310,9 @@
             },
             d => {
               if (d.success) {
-                this.editedfilter.title = d.data.title;
+                this.editedfilter.text = d.data.title;
                 this.editedfilter.description = d.data.description;
-                this.editedfilter.cover = d.data.cover ||null;
+                this.editedfilter.cover = d.data.cover || null;
                 if (d.data.images) {
                   this.editedfilter.images = bbn.fn.map(d.data.images, (a) => {
                     return {
@@ -309,8 +333,18 @@
        * @method deleteItem
        */
       deleteItem(node) {
-        if (node.parent) {
-
+        if (this.currentSelected.length) {
+          bbn.fn.post(
+            this.root + "actions/delete",
+            {
+              ids: this.currentSelected
+            },  d => {
+              if (d.success) {
+              }
+              this.selectionMode = false;
+            });
+        }
+        else if (node.parent) {
           let tmp_tree = this.getRef('tree');
           let parent_node = node.parent;
           let idx = bbn.fn.search(this.elements, { id: node.data.id});
@@ -405,6 +439,9 @@
       },
     },
     watch: {
+      selectionMode(v) {
+        this.currentSelected.splice(0, this.currentSelected.length);
+      },
       filter(v, ov) {
         this.elements.splice(0, this.elements.length);
         if (!v || (v.length < 2)) {
@@ -417,14 +454,6 @@
         else {
           this.data.filter = v;
           this.updateData();
-        }
-      },
-      'currentData.url'() {
-        if (!this.editedfilter.id) {
-          clearTimeout(this.checkTimeout);
-          this.checkTimeout = setTimeout(() => {
-            this.checkUrl();
-          }, 250);
         }
       }
     }

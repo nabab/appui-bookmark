@@ -23,7 +23,19 @@
 
     <bbn-pane>
       <div class="bbn-overlay bbn-flex-height list-block">
-        <div class="bbn-padded bbn-b bbn-grid-fields">
+        <div class="bbn-padded bbn-b bbn-w-100">
+          <bbn-button :text="selectionMode ? '<?= _("Stop multiple selection") ?>' : '<?= _("Select multiple items") ?>'"
+                      icon="nf nf-mdi-checkbox_multiple_marked_outline"
+                      :notext="true"
+                      class="bbn-lg bbn-right-margin"
+                      @click="selectionMode = !selectionMode"/>
+          <bbn-dropdown placeholder="<?= _("Action to perform") ?>"
+                        v-if="selectionMode"
+                        :disabled="currentSelected.length <= 1"
+                        source-action="action"
+                        class="bbn-right-margin"
+                        :source="actionSource"
+                        ></bbn-dropdown>
           <bbn-input placeholder="Search a link"
                      v-model="filter"></bbn-input>
           <div class="bbn-m">
@@ -45,6 +57,7 @@
               <appui-bookmark-item class="bookmark"
                                    v-for="(block, i) in elements"
                                    :source="block"
+                                   :selected="currentSelected.indexOf(block.id) > -1"
                                    :ref="'item-' + block.id"
                                    :key="block.id"/>
             </div>
@@ -58,7 +71,6 @@
     <div class="bbn-block bbn-padded bbn-lg">
       <bbn-loadicon/> &nbsp;
       <?= _("Please wait") ?><br>
-      <?= _("A virtual browser is visiting the link") ?>
     </div>
   </div>
 </div>

@@ -32,7 +32,19 @@
       source: {
         type: Object,
         default() {
-          return {};
+          return {
+            url: "",
+            text: "", //input
+            image: "",
+            description: "", //textarea
+            id: null,
+            cover: "",
+            images: [],
+            id_parent: this.node ? this.node.data.id : null,
+            screenshot_path: "",
+            id_screenshot: "",
+            count: 0
+          };
         }
       }
     },
@@ -44,23 +56,11 @@
         currentNode: null,
         showGallery: false,
         visible: false,
-        currentData: this.source || {
-          url: "",
-          text: "", //input
-          image: "",
-          description: "", //textarea
-          id: null,
-          cover: "",
-          images: [],
-          id_parent: this.node ? this.node.data.id : null,
-          screenshot_path: "",
-          id_screenshot: "",
-          count: 0
-        },
+        currentData: this.source,
         currentSource: [],
         drag: true,
         bookmarkCp: null,
-      	formDisabled: false
+        formDisabled: false
       }
     },
     computed: {
@@ -72,6 +72,7 @@
         return res;
       },
       formAction() {
+        bbn.fn.log('currentData', this.currentData);
         return (this.root + "actions/" + (this.currentData.id ? "modify" : "add"));
       }
     },
@@ -119,7 +120,7 @@
             },
             d => {
               if (d.success) {
-                this.currentData.title = d.data.title;
+                this.currentData.text = d.data.title;
                 this.currentData.description = d.data.description;
                 this.currentData.cover = d.data.cover ||null;
                 if (d.data.images) {
@@ -130,6 +131,7 @@
                     }
                   })
                 }
+                this.$forceUpdate();
               }
               return false;
             }
@@ -153,6 +155,7 @@
                   }
                 })
               }
+              this.$forceUpdate();
             }
             return false;
           }
@@ -163,7 +166,7 @@
           window.open(this.root + "actions/go/" + this.currentData.id, this.currentData.id);
         }
         else {
-          window.open(this.currentData.url, this.currentData.title);
+          window.open(this.currentData.url, this.currentData.text);
         }
       },
       openUrlSource(source) {
@@ -189,6 +192,7 @@
         });
       },
       resetform() {
+        bbn.fn.log("test reset");
         this.currentData = {
           url: "",
           title: "",
@@ -211,9 +215,10 @@
               },
               d => {
                 if (d.success) {
-                  this.currentData.title = d.data.title;
+                  bbn.fn.log('preview = ', d.data);
+                  this.currentData.text = d.data.title;
                   this.currentData.description = d.data.description;
-                  this.currentData.cover = d.data.cover ||null;
+                  this.currentData.cover = d.data.cover || null;
                   if (d.data.images) {
                     this.currentData.images = bbn.fn.map(d.data.images, (a) => {
                       return {
@@ -235,7 +240,7 @@
           {
             url: this.currentData.url,
             description: this.currentData.description,
-            title: this.currentData.title,
+            title: this.currentData.text,
             id_parent:  this.currentData.idParent,
             cover: this.currentData.cover,
           },  d => {
@@ -255,7 +260,7 @@
         bbn.fn.post(this.root + "actions/modify", {
           url: this.currentData.url,
           description: this.currentData.description,
-          title: this.currentData.title,
+          title: this.currentData.text,
           id: this.currentData.id,
           cover: this.currentData.cover,
           screenshot_path: this.currentData.screenshot_path,
@@ -272,6 +277,7 @@
     watch: {
       'currentData.url'(v) {
         if (!this.currentData.id) {
+          bbn.fn.log("TRY");
           clearTimeout(this.checkTimeout);
           this.checkTimeout = setTimeout(() => {
             this.checkUrl();

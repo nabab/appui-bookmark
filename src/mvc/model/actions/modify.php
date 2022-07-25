@@ -18,7 +18,7 @@ if ($model->hasData(['id', 'url', 'text'])) {
   $model->inc->pref->updateBit($model->data['id'], [
     'text' => $model->data['text'],
     'url' => $model->data['url'],
-    'description' => $model->data['description'] ?? "",
+    'description' => $model->data['description'] ?: "",
     'cover' => $model->data['cover'] ?? null,
     'count' => $model->data['count'] ?? 0,
   ], true);

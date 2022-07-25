@@ -21,11 +21,11 @@ $tree = $my_list ? $model->inc->pref->getTree($my_list['id']) : false;
 
 if ($tree['items'] || $tree['id']) {
   $res['id_bit'] = $model->inc->pref->addBit($my_list['id'], [
-    'text' => $model->data['title'],
+    'text' => $model->data['text'],
     'url' => $model->data['url'] ?? null,
     'id_parent' => $model->data['id_parent'] ?: null,
-    'cover' => $model->data['cover'] ?? null,
-    'description' => $model->data['description'] ?? null,
+    'cover' => $model->data['cover'] ?: null,
+    'description' => $model->data['description'] ?: "",
     'clicked' => 0
   ]);
   if ($res['id_bit']) {
