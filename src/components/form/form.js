@@ -117,9 +117,9 @@
             d => {
               if (d.success) {
                 this.currentData.text = d.data.title;
-                this.currentData.description = ""; //d.data.description;
-                this.currentData.cover = d.data.cover ||null;
-                if (d.data.images) {
+                this.currentData.description = d.data.description;
+                this.currentData.cover = d.data.cover || null;
+                if (d.data.images.length) {
                   this.currentData.images = bbn.fn.map(d.data.images, (a) => {
                     return {
                       content: a,
@@ -143,7 +143,8 @@
           },
           d => {
             if (d.success) {
-              if (d.data.images) {
+              if (d.data.images.length) {
+                bbn.fn.log(d.data.images.length);
                 this.currentData.images = bbn.fn.map(d.data.images, (a) => {
                   return {
                     content: a,
@@ -213,9 +214,10 @@
                 if (d.success) {
                   bbn.fn.log('preview = ', d.data);
                   this.currentData.text = d.data.title;
-                  this.currentData.description = ""; //d.data.description;
+                  this.currentData.description = d.data.description;
                   this.currentData.cover = d.data.cover || null;
-                  if (d.data.images) {
+                  if (d.data.images.length) {
+                    bbn.fn.log(d.data.images.length);
                     this.currentData.images = bbn.fn.map(d.data.images, (a) => {
                       return {
                         content: a,

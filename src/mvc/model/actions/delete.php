@@ -11,11 +11,10 @@ use bbn\X;
 $res = ['success' => false];
 
 if ($model->hasData('ids')) {
-  $res = 0;
   foreach($model->data['ids'] as $id) {
-    $res += (int)$model->inc->pref->deleteBit($id);
+    $model->inc->pref->deleteBit($id);
   }
-  $res['success'] = $res;
+  $res['success'] = true;
 }
 elseif ($model->hasData('id')) {
   $model->inc->pref->deleteBit($model->data['id']);

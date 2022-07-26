@@ -339,6 +339,9 @@
               ids: this.currentSelected
             },  d => {
               if (d.success) {
+                let tmp_tree = this.getRef('tree');
+                this.closest('bbn-container').reload();
+                tmp_tree.reload();
               }
               this.selectionMode = false;
             });
