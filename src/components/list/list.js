@@ -126,7 +126,6 @@
       },
       afterUpdate() {
         bbn.fn.each(this.filteredData, a => {
-          bbn.fn.log('ELEMENTS = ', a.data);
           this.elements.push(a.data);
         });
         this.loading = false;

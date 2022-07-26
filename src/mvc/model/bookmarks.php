@@ -46,6 +46,7 @@ if ($model->hasData('limit')) {
       $f['num'],
       $f['text'],
       $f['id_parent'],
+      'description' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.description\')), \'\')',
       'cover' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.cover\')), \'\')',
       'url' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.url\')), \'\')',
       'id_screenshot' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.id_screenshot\')), \'\')',

@@ -5,7 +5,7 @@
     bbn.fn.each(arr, a => {
       if (a.url) {
         res.push({
-          cover: a.cover ||"",
+          cover: a.cover || "",
           description: a.description || "",
           id: a.id,
           id_screenshot: a.id_screenshot || null,
@@ -72,16 +72,13 @@
         return res;
       },
       formAction() {
-        bbn.fn.log('currentData', this.currentData);
         return (this.root + "actions/" + (this.currentData.id ? "modify" : "add"));
       }
     },
     methods: {
       onSuccess(data) {
-        bbn.fn.log("OnSuccess Get : ", data, this.node);
         if (data.success) {
           if (this.node && this.node.id_parent) {
-            bbn.fn.log("OnSuccess Get : ", this.node);
             this.node.reload();
           }
         }
@@ -95,7 +92,6 @@
        * @method puppeteer_preview
        */
       puppeteer_preview() {
-        bbn.fn.log('puppeteer_preview() function');
         this.formDisabled = true;
         bbn.fn.post(
           this.root + "actions/puppeteer_preview",
@@ -121,7 +117,7 @@
             d => {
               if (d.success) {
                 this.currentData.text = d.data.title;
-                this.currentData.description = d.data.description;
+                this.currentData.description = ""; //d.data.description;
                 this.currentData.cover = d.data.cover ||null;
                 if (d.data.images) {
                   this.currentData.images = bbn.fn.map(d.data.images, (a) => {
@@ -217,7 +213,7 @@
                 if (d.success) {
                   bbn.fn.log('preview = ', d.data);
                   this.currentData.text = d.data.title;
-                  this.currentData.description = d.data.description;
+                  this.currentData.description = ""; //d.data.description;
                   this.currentData.cover = d.data.cover || null;
                   if (d.data.images) {
                     this.currentData.images = bbn.fn.map(d.data.images, (a) => {
@@ -277,13 +273,10 @@
     watch: {
       'currentData.url'(v) {
         if (!this.currentData.id) {
-          bbn.fn.log("TRY");
           clearTimeout(this.checkTimeout);
           this.checkTimeout = setTimeout(() => {
             this.checkUrl();
           }, 250);
-        } else {
-          bbn.fn.log('dataURL : ', this.currentData.url, 'v : ', v);
         }
       },
     }
