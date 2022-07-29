@@ -24,4 +24,14 @@ if ($model->hasData(['id', 'url', 'text'])) {
   ], true);
   $res['success'] = true;
 }
+elseif ($model->hasData(['id','title'])) {
+  $bit = $model->inc->pref->getBit($model->data['id']);
+  if ($model->hasData('file', true)) {
+    $path = $model->inc->user->getTmpDir().$model->data['file'];
+  }
+  $model->inc->pref->updateBit($model->data['id'], [
+    'text' => $model->data['title'],
+  ], true);
+  $res['success'] = true;
+}
 return $res;

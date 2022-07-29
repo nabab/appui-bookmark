@@ -78,9 +78,7 @@
     methods: {
       onSuccess(data) {
         if (data.success) {
-          if (this.node && this.node.id_parent) {
-            this.node.reload();
-          }
+          this.$forceUpdate();
         }
       },
       showScreenshot() {

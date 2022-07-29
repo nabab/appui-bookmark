@@ -12,15 +12,38 @@
   return {
     props: {
       node: {
-        type: Vue
+        type: Vue,
+        /*default() {
+          return {
+            icon: "nf nf-mdi-folder",
+            id: null,
+            id_option: null,
+            id_parent: null,
+            id_user_option: null,
+            num: null,
+            numChildren: 0,
+            text: ""
+          };*/
+      },
+      parentNode: {
+        type: Vue,
+        /*default() {
+          return {
+            icon: "nf nf-mdi-folder",
+            id: null,
+            id_option: null,
+            id_parent: null,
+            id_user_option: null,
+            num: null,
+            numChildren: 0,
+            text: ""
+          };*/
+      },
+      subfolder: {
+        type: Boolean,
+        default: false
       },
       tree: {
-      },
-      source: {
-        type: Object,
-        default() {
-          return {};
-        }
       }
     },
     data() {
@@ -32,9 +55,9 @@
         showGallery: false,
         visible: false,
         currentData: {
-          title: "", //input
-          id: null,
-          id_parent: this.node ? this.node.data.id : null,
+          title: this.node ? this.node.data.text : "",
+          id: this.node ? this.node.data.id : null,
+          id_parent: this.parentNode ? this.parentNode.data.id : null,
           icon: "nf nf-custom-folder"
         },
         currentSource: [],
@@ -51,11 +74,7 @@
         return res;
       },
       formAction() {
-        bbn.fn.log("formAction");
-        if (this.source.id) {
-          this.currentData.title = this.source.text;
-          this.currentData.id = this.source.id;
-        }
+        bbn.fn.log(this.parentNode);
         return (this.root + "actions/" + (this.currentData.id ? "modify" : "folder_insert"));
       }
     },
@@ -63,10 +82,11 @@
       onSuccess(data) {
         bbn.fn.log("OnSuccess Get : ", data, this.node);
         if (data.success) {
-          if (this.node && this.node.id_parent) {
-            this.node.icon = "nf nf-custom-folder";
-            bbn.fn.log("OnSuccess Get : ", this.node);
-            this.node.reload();
+          if (this.parentNode && this.parentNode.data.id) {
+            if (this.parentNode.data.id_parent && this.parentNode.data.numChildren) {
+              this.parentNode.reload();
+            }
+            this.tree.reload();
           }
           else {
             this.tree.reload();

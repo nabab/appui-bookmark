@@ -38,12 +38,10 @@
                         ></bbn-dropdown>
           <bbn-input placeholder="Search a link"
                      v-model="filter"></bbn-input>
-          <div class="bbn-m">
             <span>
               {{total}}
             </span>
             <label><?=_("links")?></label>
-          </div>
         </div>
 
         <div class="bbn-flex-fill" >

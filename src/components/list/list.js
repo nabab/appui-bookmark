@@ -170,9 +170,10 @@
                 component: 'appui-bookmark-addfolder',
                 componentOptions: {
                   //source: node,
-                  node: node,
+                  parentNode: node,
                   tree: tmp_tree
                 },
+                title: bbn._("New Folder")
               })
             }
           });
@@ -226,6 +227,7 @@
        */
       addLink(node) {
         let tmp_tree = this.getRef('tree');
+        bbn.fn.log(node);
         if (!node) {
           this.getPopup({
             component: "appui-bookmark-form",
@@ -257,14 +259,23 @@
             title: node.data.id ? bbn._("Edit Bookmark") : bbn._("New Bookmark")
           });
         }
+        else if (node) {
+          this.getPopup({
+            component: "appui-bookmark-addfolder",
+            componentOptions: {
+              node: node,
+              tree: tmp_tree
+            },
+            title: node && node.data.id ? bbn._("Edit Folder5") : bbn._("New Folder5")
+          });
+        }
         else {
           this.getPopup({
             component: "appui-bookmark-addfolder",
             componentOptions: {
-              source: node,
               tree: tmp_tree
             },
-            title: node && node.id ? bbn._("Edit Folder") : bbn._("New Folder")
+            title: bbn._("New Folder4")
           });
         }
       },
@@ -311,7 +322,7 @@
               if (d.success) {
                 this.editedfilter.text = d.data.title;
                 this.editedfilter.description = d.data.description;
-                this.editedfilter.cover = d.data.cover || null;
+                this.editedfilter.cover = d.data.cover || "";
                 if (d.data.images) {
                   this.editedfilter.images = bbn.fn.map(d.data.images, (a) => {
                     return {

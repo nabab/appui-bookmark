@@ -24,7 +24,7 @@ if ($tree['items'] || $tree['id']) {
     'text' => $model->data['text'],
     'url' => $model->data['url'] ?? null,
     'id_parent' => $model->data['id_parent'] ?: null,
-    'cover' => $model->data['cover'] ?: null,
+    'cover' => $model->data['cover'] ?: "",
     'description' => $model->data['description'] ?: "",
     'clicked' => 0
   ]);
