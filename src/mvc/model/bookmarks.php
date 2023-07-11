@@ -6,67 +6,49 @@
 
 /** @var $model \bbn\Mvc\Model*/
 use bbn\X;
-use bbn\Appui\Grid;
 
-if ($model->hasData('limit')) {
-  $id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
-  $cfg = $model->inc->pref->getClassCfg();
-  $f = $cfg['arch']['user_options_bits'];
-  $user_option = $model->inc->pref->getByOption($id_list);
-  $where = [
-    'logic' => 'AND',
-    'conditions' => [[
-      'field' => $f['id_user_option'],
-      'value' => $user_option['id']
-    ], [
-      'field' => 'url',
-      'operator' => "isnotempty"
-    ]]
-  ];
-  if (!empty($model->data['data']['filter'])) {
-    $cond = [
-      'logic' => 'OR',
-      'conditions' => [[
-        'field' => 'text',
-        'operator' => "contains",
-        'value' => $model->data['data']['filter']
-      ], [
-        'field' => 'url',
-        'operator' => "contains",
-        'value' => $model->data['data']['filter']
-      ]]
-    ];
-    array_push($where['conditions'], $cond);
-  }
-  $grid = new Grid($model->db, $model->data, [
-    'table' => $cfg['tables']['user_options_bits'],
-    'fields' => [
-      $f['id'],
-      $f['id_option'],
-      $f['num'],
-      $f['text'],
-      $f['id_parent'],
-      'description' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.description\')), \'\')',
-      'cover' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.cover\')), \'\')',
-      'url' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.url\')), \'\')',
-      'id_screenshot' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.id_screenshot\')), \'\')',
-      'screenshot_path' => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.screenshot_path\')), \'\')',
-      "clicked" => 'IFNULL (JSON_UNQUOTE(JSON_EXTRACT('.$f['cfg'].', \'$.clicked\')), 0)'
-    ],
-    'filters' => $where,
-    'order' => [[
-      'field' => "clicked",
-      'dir' => 'DESC'
-    ]]
-  ]);
-  $data = $grid->getDatatable(true);
-  foreach($data['data'] as &$d) {
-    foreach($d as $i => $a) {
-      if ($a === "null") {
-        $d[$i] = null;
+$id_list = $model->inc->options->fromCode("list", "bookmarks", "note", "appui");
+//$id_cat = $model->inc->options->fromCode("cat", "bookmarks", "note", "appui");
+$tree = $model->getCachedModel($model->pluginUrl("appui-note")."/data/bookmarks", [], 3600);
+$parents[] = [
+  'text' => 'None',
+  'value' => ''
+];
+$all_id = [];
+
+$mapper = function ($ar) use (&$parents, &$mapper) {
+  foreach ($ar as $a) {
+    if (empty($a['url'])) {
+      $parents[] = [
+        'text' => $a['text'],
+        'value' => $a['id']
+      ];
+      if (!empty($a['items'])) {
+        $mapper($a['items']);
       }
     }
   }
-  unset($d);
-  return $data;
-}
+};
+
+$map = function ($ar) use (&$all_id, &$map) {
+  foreach($ar as $a) {
+    $all_id[] = [
+      'text' => $a['text'],
+      'value' => $a['id'],
+      'img' => $a['cover']
+    ];
+    if (!empty($a['items'])) {
+      $map($a['items']);
+    }
+  }
+};
+
+$map($tree['items']);
+$mapper($tree['items']);
+$tree = $model->getCachedModel($model->pluginUrl("appui-note")."/data/bookmarks", [], 3600);
+
+return [
+  'parents' => $parents,
+  'allId' => $all_id,
+  'data' => $tree && $tree['items'] ? $tree['items'] : []
+];

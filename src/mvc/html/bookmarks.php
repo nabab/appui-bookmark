@@ -1,5 +1,1 @@
-<appui-bookmark-list :source="root + 'bookmarks'"
-                     :filterable="true"
-                     :pageable="true"
-                     :url="root + 'actions'"
-                     :search="true"/>
+<appui-note-bookmarks-list :source="source"></appui-note-bookmarks-list>
