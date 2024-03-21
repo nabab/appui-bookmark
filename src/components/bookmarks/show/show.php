@@ -4,22 +4,22 @@
   <div class="bbn-w-100 bbn-padded">
     <bbn-button class="bbn-p"
                 icon="nf nf-fa-trash "
-                title="<?=_("Delete this link")?>"
+                title="<?= _("Delete this link") ?>"
                 @click="remove"
-                :text="'<?=_("Delete this")?>' + ' ' + selectedType"
+                :text="'<?= _("Delete this") ?>' + ' ' + selectedType"
     ></bbn-button>
     <bbn-button class="bbn-p"
                 icon="nf nf-fa-edit "
-                title="<?=_("Edit this link")?>"
+                title="<?= _("Edit this link") ?>"
                 @click="edit"
-                :text="'<?=_("Edit this")?>' + ' ' + selectedType"
+                :text="'<?= _("Edit this") ?>' + ' ' + selectedType"
     ></bbn-button>
   </div>
   
   <div v-if="selectedType === 'link'" class="bbn-grid-fields">
     <span v-if="source.showLink.path" 
         class="bbn-green bbn-medium"
-    ><?=_("Path")?></span>
+    ><?= _("Path") ?></span>
     <div v-if="source.showLink.path"
         class="bbn-green bbn-medium"
         v-text="(source.showLink.path !== '/') ? source.showLink.path : 'Root'"
@@ -27,7 +27,7 @@
 
     <span v-if="source.showLink.text"
           class="bbn-medium"
-    ><?=_("Text")?></span>
+    ><?= _("Text") ?></span>
     <div v-if="source.showLink.text"
         v-text="source.showLink.text"
         class="bbn-medium"
@@ -36,14 +36,14 @@
 
     <span v-if="source.showLink.url"
           class="bbn-medium"
-    ><?=_("Url")?></span>
+    ><?= _("Url") ?></span>
     <div class="bbn-medium">
       <a :src="renderUrl(source.showLink.url)" v-text="renderUrl(source.showLink.url)" class="bbn-p bbn-medium"></a>
     </div>
 
     <span v-if="source.showLink.description"
           class="bbn-medium"
-    ><?=_("Description")?></span>
+    ><?= _("Description") ?></span>
     <div v-if="source.showLink.description" 
         v-text="source.showLink.description ? source.showLink.description : '' "
         class="bbn-medium"     
@@ -92,11 +92,11 @@
     ></span>
     <span v-else 
           class="bbn-grid-full"
-    ><?=_("This folder is empty")?></span>
-    <span><?=_("Folder name")?></span>
+    ><?= _("This folder is empty") ?></span>
+    <span><?= _("Folder name") ?></span>
     <span v-text="source.showFolder.text"></span>
     
-    <span><?=_("Parent")?></span>
+    <span><?= _("Parent") ?></span>
     <span v-text="source.showFolder.parent"></span>
   </div>
 </div>

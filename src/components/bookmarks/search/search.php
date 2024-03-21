@@ -4,5 +4,5 @@
   <bbn-input placeholder="Search a link"
              class="bbn-w-=100"
              v-model="search"></bbn-input>
-  <label><?=_("1314 links")?></label>
+  <label><?= _("1314 links") ?></label>
 </div>

@@ -5,7 +5,7 @@
           v-model="currentData"
           class="bbn-m">
   <div class="bbn-padded bbn-grid-fields" >
-    <label><?=_("URL")?></label>
+    <label><?= _("URL") ?></label>
     <div class="bbn-flex-width">
       <bbn-input v-model="currentData.url"
                  class="bbn-flex-fill bbn-right-space"></bbn-input>
@@ -14,19 +14,19 @@
                   text="Go to"></bbn-button>
     </div>
 
-    <label><?=_("In which file ?")?></label>
+    <label><?= _("In which file ?") ?></label>
     <bbn-dropdown :source="bookmarkCp.parents"
                   class="bbn-wider"
                   v-model="idParent"
                   placeholder="Is there a parent ?"
                   ></bbn-dropdown>
 
-    <label><?=_("Title")?></label>
+    <label><?= _("Title") ?></label>
     <bbn-input v-model="currentData.title"
                :required="true"
                placeholder="Name of the URL"></bbn-input>
 
-    <label><?=_("URL's description")?></label>
+    <label><?= _("URL's description") ?></label>
     <bbn-textarea v-model="currentData.description"></bbn-textarea>
 
     <div v-if="currentData.cover">

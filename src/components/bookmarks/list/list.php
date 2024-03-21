@@ -17,7 +17,7 @@
                       :draggable="true"
                       @dragEnd="isDragEnd"
                       ></bbn-tree>
-            <label class="bbn-w-100" v-else><?=_("No Bookmarks yet")?></label>
+            <label class="bbn-w-100" v-else><?= _("No Bookmarks yet") ?></label>
           </div>
         </div>
       </div>

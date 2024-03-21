@@ -8,7 +8,7 @@
       <span>
         {{currentData.length}}
       </span>
-      <label><?=_("links")?></label>
+      <label><?= _("links") ?></label>
     </div>
   </div>
 
