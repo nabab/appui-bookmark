@@ -4,7 +4,7 @@
  *
  **/
 
-/** @var $model \bbn\Mvc\Model*/
+/** @var bbn\Mvc\Model $model */
 use bbn\X;
 
 if ($model->data['source'] && $model->data['dest']) {

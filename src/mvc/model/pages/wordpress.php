@@ -1,5 +1,5 @@
 <?php
-/** @var $model \bbn\Mvc\Model */
+/** @var bbn\Mvc\Model $model */
 $model->db->change('apst_web');
 $columns_wp_posts = $model->db->getColumns('wp_posts');
 

@@ -1,5 +1,5 @@
 <?php
-/** @var $model \bbn\Mvc\Model */
+/** @var bbn\Mvc\Model $model */
 $limit = isset($model->data['limit']) && is_int($model->data['limit']) ? $model->data['limit'] : 5;
 $start = isset($model->data['start']) && is_int($model->data['start']) ? $model->data['start'] : 0;
 $type_note = $model->inc->options->fromCode('news', 'types', 'note', 'appui');
