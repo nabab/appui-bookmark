@@ -1,7 +1,7 @@
 <div class="bbn-overlay book-bottom" 
     
 >
-  <div class="bbn-w-100 bbn-padded">
+  <div class="bbn-w-100 bbn-padding">
     <bbn-button class="bbn-p"
                 icon="nf nf-fa-trash "
                 title="<?= _("Delete this link") ?>"

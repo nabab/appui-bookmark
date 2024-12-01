@@ -1,7 +1,7 @@
 <!-- HTML Document -->
 
 <div class="bbn-overlay bbn-flex-height appui-note-bookmarks-block">
-  <div class="bbn-padded bbn-b bbn-grid-fields">
+  <div class="bbn-padding bbn-b bbn-grid-fields">
     <bbn-input placeholder="Search a link"
                v-model="search"></bbn-input>
     <div class="bbn-m">

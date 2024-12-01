@@ -1,8 +1,8 @@
 <!-- HTML Document -->
 
-<div class="bbn-padded bbn-l-padded"
+<div class="bbn-padding bbn-l-padded"
      style="min-width: 50em margin-left: 1em">
-  <div class="bbn-right-padded">
+  <div class="bbn-right-padding">
     <bbn-upload
               :text="title"
               :auto-upload="true"

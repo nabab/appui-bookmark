@@ -4,15 +4,15 @@
     <bbn-pane size="50%"
     >
 			<div class="bbn-100">
-        <div class="bbn-padded button-container">
+        <div class="bbn-padding button-container">
           <bbn-button icon="nf nf-fa-star"
-                      class="bbn-padded star"
+                      class="bbn-padding star"
                       @click="showFormLinkM"
                       title="<?= _('New bookmark') ?>"
                       text="<?= _('New bookmark') ?>"
                       ></bbn-button>
           <bbn-button icon="nf nf-fa-folder_plus"
-                      class="bbn-padded"
+                      class="bbn-padding"
                       @click="showFormFolderM"
                       title="<?= _('New folder') ?>"
                       text="<?= _('New folder') ?>"

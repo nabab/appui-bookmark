@@ -7,12 +7,12 @@
                tag="div"
                class="bbn-overlay">
     <div @click="openUrlSource(source)">
-      <div class="url bbn-xspadded">
+      <div class="url bbn-xspadding">
       <span>
         {{source.text}}
       </span>
     </div>
-    <div class="urlT bbn-xspadded">
+    <div class="urlT bbn-xspadding">
       <span>
         {{source.text}}
       </span>
