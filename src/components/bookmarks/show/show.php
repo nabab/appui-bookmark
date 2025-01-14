@@ -6,13 +6,13 @@
                 icon="nf nf-fa-trash "
                 title="<?= _("Delete this link") ?>"
                 @click="remove"
-                :text="'<?= _("Delete this") ?>' + ' ' + selectedType"
+                :label="'<?= _("Delete this") ?>' + ' ' + selectedType"
     ></bbn-button>
     <bbn-button class="bbn-p"
                 icon="nf nf-fa-edit "
                 title="<?= _("Edit this link") ?>"
                 @click="edit"
-                :text="'<?= _("Edit this") ?>' + ' ' + selectedType"
+                :label="'<?= _("Edit this") ?>' + ' ' + selectedType"
     ></bbn-button>
   </div>
   

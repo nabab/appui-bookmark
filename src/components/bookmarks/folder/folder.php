@@ -20,12 +20,12 @@
     <bbn-input type="hidden" :value="parent"></bbn-input>
   </div>
   <div class="bbn-l bbn-padding">
-    <bbn-button text="<?= _("Cancel") ?>" 
+    <bbn-button label="<?= _("Cancel") ?>" 
                 icon="nf nf-fa-times"
                 @click="closeForm"
     >
     </bbn-button>
-    <bbn-button text="<?= _("Create folder") ?>" 
+    <bbn-button label="<?= _("Create folder") ?>" 
                 icon="nf nf-fa-check"
                 @click="submit"
     >

@@ -9,13 +9,13 @@
                       class="bbn-padding star"
                       @click="showFormLinkM"
                       title="<?= _('New bookmark') ?>"
-                      text="<?= _('New bookmark') ?>"
+                      label="<?= _('New bookmark') ?>"
                       ></bbn-button>
           <bbn-button icon="nf nf-fa-folder_plus"
                       class="bbn-padding"
                       @click="showFormFolderM"
                       title="<?= _('New folder') ?>"
-                      text="<?= _('New folder') ?>"
+                      label="<?= _('New folder') ?>"
           ></bbn-button>
         </div>
         <div class="bbn-100">

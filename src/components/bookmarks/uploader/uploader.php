@@ -4,7 +4,7 @@
      style="min-width: 50em margin-left: 1em">
   <div class="bbn-right-padding">
     <bbn-upload
-              :text="title"
+              :label="title"
               :auto-upload="true"
               :download="true"
 							:save-url="root + 'actions/bookmarks/import'"

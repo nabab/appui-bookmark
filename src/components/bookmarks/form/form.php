@@ -11,7 +11,7 @@
                  class="bbn-flex-fill bbn-right-space"></bbn-input>
       <bbn-button class="bbn-w-2"
                   @click="openUrl"
-                  text="Go to"></bbn-button>
+                  label="Go to"></bbn-button>
     </div>
 
     <label><?= _("In which file ?") ?></label>
@@ -36,11 +36,11 @@
     <div v-if="currentData.cover">
       <bbn-button v-if="currentData.images"
                   @click="showGallery = true"
-                  text="change cover picture"></bbn-button>
+                  label="change cover picture"></bbn-button>
     </div>
     <div>
       <bbn-floater v-if="showGallery"
-                   :title="_('Pick a cover picture')"
+                   :label="_('Pick a cover picture')"
                    :closable="true"
                    :width="500"
                    :height="500"
@@ -60,14 +60,14 @@
       <bbn-button	v-if="currentData.id_screenshot"
                 @click="showScreenshot"
                 class="bbn-padding"
-                text="show screenshot"
+                label="show screenshot"
                 ></bbn-button>
     <bbn-floater v-if="visible"
                  :closable="true"
                  :width="800"
                  :height="600"
                  :resizable="true"
-                 :title="_('a screenshot from the site')"
+                 :label="_('a screenshot from the site')"
                  @close="visible = false">
       <img :src="root + 'media/image/' + currentData.id_screenshot">
     </bbn-floater>

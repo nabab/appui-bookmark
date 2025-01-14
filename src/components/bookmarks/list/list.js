@@ -83,7 +83,7 @@
         this.getPopup({
           component: "appui-note-bookmarks-uploader",
           componentOptions: null,
-          title: false,
+          label: false,
         });
       },
       deleteAllBookmarks() {
