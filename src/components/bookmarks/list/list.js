@@ -55,7 +55,7 @@
             action: this.newform,
           },
           {
-            icon: "nf nf-mdi-clipboard_plus",
+            icon: "nf nf-md-clipboard_plus",
             text: "Import bookmarks",
             notext: true,
             action: this.importing,

@@ -141,7 +141,7 @@
           },
           {
             text: bbn._("Delete"),
-            icon: "nf nf-mdi-delete",
+            icon: "nf nf-md-delete",
             action: () => {
               this.deletePreference(bookmark);
             }
