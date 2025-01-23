@@ -17,24 +17,43 @@
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
 stages:          # List of stages for jobs, and their order of execution
+  - codeberg
   - github
 
+codeberg-sync:
+  stage: codeberg
+  script:
+    - echo "Synching with Codeberg"
+    - rm -rf ~/plugins_appui-bookmark
+    - mkdir ~/plugins_appui-bookmark
+    - cd ~/plugins_appui-bookmark
+    - git clone --bare git@git.bbn.so:plugins/appui-bookmark.git .
+    - git remote add --mirror=fetch codeberg git@codeberg.org:appui/bookmark.git
+    - git fetch git@git.bbn.so:plugins/appui-bookmark.git master
+    - git fetch git@codeberg.org:appui/bookmark.git master
+    - git push -f git@codeberg.org:appui/bookmark.git master
+    - git push -f git@codeberg.org:appui/bookmark.git --tags
+    - cd -
+    - rm -rf ~/plugins_appui-bookmark
+    - echo "Codeberg synching finished !"
+  tags:
+    - codeberg
 github-sync:       # This job runs in the build stage, which runs first.
   stage: github
   script:
     - echo "Synching with Github..."
-    - cd ~/
-    - rm -rf plugins
-    - mkdir -p plugins/appui-bookmark
-    - git clone --bare git@git.bbn.so:plugins/appui-bookmark.git plugins/appui-bookmark
-    - cd plugins/appui-bookmark
+    - rm -rf ~/plugins_appui-bookmark
+    - mkdir ~/plugins_appui-bookmark
+    - cd ~/plugins_appui-bookmark
+    - git clone --bare git@git.bbn.so:plugins/appui-bookmark.git .
     - git remote add --mirror=fetch github git@github.com:nabab/appui-bookmark.git
     - git fetch git@git.bbn.so:plugins/appui-bookmark.git master
     - git fetch git@github.com:nabab/appui-bookmark.git master
-    - git push -f git@github.com:nabab/appui-bookmark.git --all
+    - git push -f git@github.com:nabab/appui-bookmark.git master
     - git push -f git@github.com:nabab/appui-bookmark.git --tags
     - cd -
-    - rm -rf plugins
-    - echo "Synching finished !"
+    - rm -rf ~/plugins_appui-bookmark
+    - echo "Github synching finished !"
   tags:
     - github
+
