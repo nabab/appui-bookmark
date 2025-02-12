@@ -5,7 +5,7 @@
     <bbn-button class="bbn-p"
                 icon="nf nf-fa-trash "
                 title="<?= _("Delete this link") ?>"
-                @click="remove"
+                @click="removeItem"
                 :label="'<?= _("Delete this") ?>' + ' ' + selectedType"
     ></bbn-button>
     <bbn-button class="bbn-p"

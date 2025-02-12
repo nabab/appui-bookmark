@@ -19,7 +19,7 @@
       edit(){
         bookmarks.edit();
       },
-      remove() {
+      removeItem() {
         if ( this.selectedType === 'link' ){
           return bookmarks.deleteLink();
         }
