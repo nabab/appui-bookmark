@@ -1,14 +1,15 @@
 <?php
 /**
- * What is my purpose?
- *
- **/
+   * What is my purpose?
+   *
+   **/
+
+/** @var bbn\Mvc\Model $model */
 
 use bbn\X;
-use bbn\Str;
-/** @var bbn\Mvc\Model $model */
+
 $id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
 $my_list = $model->inc->pref->getByOption($id_list);
-$tree = $my_list ? $model->inc->pref->getTree($my_list['id']) : false;
+$res['success'] = $model->inc->pref->deleteBits($my_list['id']);
 
-return $tree;
+return $res;

@@ -7,9 +7,9 @@
 /** @var bbn\Mvc\Model $model */
 use bbn\X;
 
-$id_list = $model->inc->options->fromCode("list", "bookmarks", "note", "appui");
-//$id_cat = $model->inc->options->fromCode("cat", "bookmarks", "note", "appui");
-$tree = $model->getCachedModel($model->pluginUrl("appui-note")."/data/bookmarks", [], 3600);
+$id_list = $model->inc->options->fromCode("list", "bookmark", "appui");
+//$id_cat = $model->inc->options->fromCode("cat", "bookmark", "appui");
+$tree = $model->getCachedModel("./data/bookmarks", [], 3600);
 $parents[] = [
   'text' => 'None',
   'value' => ''
@@ -35,17 +35,17 @@ $map = function ($ar) use (&$all_id, &$map) {
     $all_id[] = [
       'text' => $a['text'],
       'value' => $a['id'],
-      'img' => $a['cover']
+      'img' => $a['cover'] ?? null
     ];
+
     if (!empty($a['items'])) {
       $map($a['items']);
     }
   }
 };
 
-$map($tree['items']);
-$mapper($tree['items']);
-$tree = $model->getCachedModel($model->pluginUrl("appui-note")."/data/bookmarks", [], 3600);
+$map($tree['items'] ?? []);
+$mapper($tree['items'] ?? []);
 
 return [
   'parents' => $parents,

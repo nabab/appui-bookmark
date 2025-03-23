@@ -1,0 +1,84 @@
+.appui-bookmark-list {
+  .button-container{
+    /*.bbn-button.star{
+    color: darkcyan!important;
+  }*/
+  }
+  .appui-bookmark-links-container{
+    height: 100%;
+    margin-right: 20px;
+    .appui-bookmark-link-noimage{
+      i{
+        align-self: center;
+      }
+      display: flex;
+      justify-content:center;
+      min-height: 60px;
+      min-width: 60px;
+    }
+    .appui-bookmark-link-image{
+      align-self: center;
+    }
+    .appui-bookmark-link-title{
+      padding-left: 6px;
+    }
+  }
+  .fa-star{
+    color: darkcyan!important;
+  }
+
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(100px, auto);
+  }
+
+  .appui-bookmark-flex-container {
+    margin: 0;
+    main {
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 10em);
+      grid-template-rows: auto;
+      grid-column-gap: 0.5em;
+      grid-row-gap: 0.5em;
+    }
+
+    section {
+      display: block;
+      position: relative;
+      text-align: center;
+      width: 10em;
+      height: 10em;
+      margin: 1em;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: auto;
+      }
+      .url {
+        max-width: 10em;
+        width: 100%;
+        max-height: 10em;
+        height: auto;
+        background-color: black;
+        color: transparent;
+        bottom: 0px;
+        opacity: 0.6;
+        position: absolute;
+        box-sizing: border-box;
+      }
+      .urlT{
+        max-width: 10em;
+        width: 100%;
+        max-height: 10em;
+        height: auto;
+        color: white;
+        bottom: 0px;
+        position: absolute;
+        box-sizing: border-box;
+      }
+    }
+  }
+}

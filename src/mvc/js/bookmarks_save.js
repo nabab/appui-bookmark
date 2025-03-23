@@ -95,7 +95,7 @@
         }
         this.confirm(st, () => {
           this.remakeTree = true;
-          this.post('notes/actions/bookmarks/delete_folder', {folder: this.showFolder}, (d) => {
+          this.post('notes/actions/delete_folder', {folder: this.showFolder}, (d) => {
             if ( d.success ){
               
               this.source.bookmarks = d.bookmarks;
@@ -123,7 +123,7 @@
           };
         this.remakeTree = true;
         this.confirm(bbn._('Are you sure you want to delete this link?'), ()=>{
-          this.post('notes/actions/bookmarks/delete_link', {
+          this.post('notes/actions/delete_link', {
             obj: obj
           }, (d) => {
             if (d.success) {
