@@ -5,7 +5,7 @@ if ( !empty($model->data['obj']) ){
   $bookmarks = json_decode(file_get_contents($file), true);
   
   if ( !empty($bookmarks) ){
-    $idx = \bbn\X::find($bookmarks, [
+    $idx = \bbn\X::search($bookmarks, [
       'url' => $model->data['obj']['url'],
       'parent' => $model->data['obj']['parent'],
     ]);
