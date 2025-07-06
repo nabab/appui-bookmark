@@ -91,18 +91,20 @@ class import
         $img = new Image($icon);
         $this->icon = '';
         if ($img->test()) {
-          if ($img->width() == $img->height()) {
-            if ($img->width() != 16)
+          $w = $img->getWidth();
+          if ($w == $img->getHeight()) {
+            if ($w != 16) {
               $img->resize(16);
+            }
+
             $this->icon = $img->toString();
-            $icon_good = 1;
           }
         }
         $this->bookmark_new();
       }
       /* this indicates, that the folder is being closed */
       else if ($line == "/</DL><p>/i") {
-        $res = &$this->folder_close();
+        $this->folder_close();
       }
     }
     if (!is_array($this->res[0]['items'])) {
