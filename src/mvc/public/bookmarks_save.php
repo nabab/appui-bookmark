@@ -1,10 +1,6 @@
 <?php
-/*
- * Describe what it does!
- *
- **/
 
-/** @var $this \bbn\Mvc\Controller */
+/** @var bbn\Mvc\Controller $ctrl */
 
 $ctrl->setColor("#2597F0", "white");
 $ctrl->combo('Bookmarks', true);
