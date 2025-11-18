@@ -35,7 +35,7 @@
         return bookmarks.remakeTree;
       },
       ref(){
-        return dayjs().unix();
+        return bbn.date().unix();
       },
       path() {
         return bookmarks.path;
