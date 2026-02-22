@@ -11,10 +11,5 @@
       "homepage": "https://bbn.solutions",
       "role": "Developer"
     }
-  ],
-  "require": {
-    "php": ">=8.3",
-    "bbn/bbn": "dev-master",
-    "nesk/puphpeteer": "dev-dev"
-  }
+  ]
 }
