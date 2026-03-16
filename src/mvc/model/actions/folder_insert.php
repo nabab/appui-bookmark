@@ -35,7 +35,7 @@ if ( !empty($model->data['text']) ){
     
 
   }
-  $success = file_put_contents($file, Json_encode($bookmarks));
+  $success = file_put_contents($file, json_encode($bookmarks));
   return [
     'success' => $success,
     'bookmarks' => json_decode(file_get_contents($file))

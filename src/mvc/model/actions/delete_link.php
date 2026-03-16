@@ -12,7 +12,7 @@ if ( !empty($model->data['obj']) ){
    
     if ( isset($idx) ){
       array_splice($bookmarks, $idx, 1);
-      $success = file_put_contents($file, Json_encode($bookmarks, JSON_PRETTY_PRINT));
+      $success = file_put_contents($file, json_encode($bookmarks, JSON_PRETTY_PRINT));
     }
   }
 }  

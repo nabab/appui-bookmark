@@ -49,7 +49,7 @@ if ( $folder = $model->data['folder'] ){
     }
     
   }*/
-  $success = file_put_contents($file, Json_encode($bookmarks, JSON_PRETTY_PRINT));
+  $success = file_put_contents($file, json_encode($bookmarks, JSON_PRETTY_PRINT));
   
   return [
     'success' => $success,
